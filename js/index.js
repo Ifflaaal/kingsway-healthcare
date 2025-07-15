@@ -1,8 +1,24 @@
 const AppState = {
     isLoggedIn: false,
     userType: null,
-    currentUser: null
+    currentUser: null,
+    cart: [],
+    orders: []
 };
+
+// Product database
+const products = [
+    { id: 1, name: "Omega 3 Fish Oil", price: 1250, description: "High-quality omega-3 supplement", stock: 50 },
+    { id: 2, name: "Calcium + Vitamin D Tablets", price: 890, description: "Essential calcium and vitamin D supplement", stock: 30 },
+    { id: 3, name: "Vitamin C 1000mg", price: 650, description: "Immune system support tablets", stock: 45 },
+    { id: 4, name: "Multivitamin Complex", price: 1480, description: "Complete daily nutrition supplement", stock: 25 },
+    { id: 5, name: "Iron + Folic Acid", price: 720, description: "For anemia prevention and treatment", stock: 35 },
+    { id: 6, name: "Magnesium Tablets", price: 580, description: "Muscle and nerve function support", stock: 40 },
+    { id: 7, name: "Probiotics Capsules", price: 1650, description: "Digestive health support", stock: 20 },
+    { id: 8, name: "Zinc Sulfate Tablets", price: 450, description: "Immune system and wound healing", stock: 55 },
+    { id: 9, name: "Vitamin B Complex", price: 780, description: "Energy metabolism support", stock: 38 },
+    { id: 10, name: "Glucosamine Chondroitin", price: 1890, description: "Joint health and mobility support", stock: 15 }
+];
 
 // DOM Elements
 const elements = {
@@ -55,6 +71,10 @@ const Utils = {
             elements.loginBtn.parentElement.classList.remove('d-none');
             elements.logoutItem.classList.add('d-none');
         }
+    },
+
+    formatPrice: function(price) {
+        return `Rs. ${price.toLocaleString()}`;
     }
 };
 
@@ -62,7 +82,6 @@ const Utils = {
 const Auth = {
     login: function(email, password, userType) {
         return new Promise((resolve) => {
-            // Simulate API call
             setTimeout(() => {
                 if (email && password) {
                     AppState.isLoggedIn = true;
@@ -71,8 +90,14 @@ const Auth = {
                     
                     Utils.updateNavigationUI();
                     Utils.toggleSections(true);
-                    Utils.showNotification(`Welcome back! Logged in as ${userType}.`, 'success');
                     
+                    if (userType === 'customer') {
+                        Dashboard.renderCustomerDashboard();
+                    } else {
+                        Dashboard.renderStaffDashboard();
+                    }
+                    
+                    Utils.showNotification(`Welcome back! Logged in as ${userType}.`, 'success');
                     resolve({ success: true });
                 } else {
                     Utils.showNotification('Please enter valid credentials.', 'error');
@@ -86,56 +111,379 @@ const Auth = {
         AppState.isLoggedIn = false;
         AppState.userType = null;
         AppState.currentUser = null;
+        AppState.cart = [];
         
         Utils.updateNavigationUI();
         Utils.toggleSections(false);
         Utils.showNotification('You have been logged out successfully.', 'success');
+    }
+};
+
+// Shopping Cart Module
+const Cart = {
+    add: function(productId) {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+        
+        const existingItem = AppState.cart.find(item => item.id === productId);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            AppState.cart.push({ ...product, quantity: 1 });
+        }
+        
+        this.updateCartDisplay();
+        Utils.showNotification(`${product.name} added to cart!`, 'success');
     },
 
-    register: function(email, password, userType) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                Utils.showNotification('Registration successful! Please login.', 'success');
-                resolve({ success: true });
-            }, 1000);
-        });
+    remove: function(productId) {
+        AppState.cart = AppState.cart.filter(item => item.id !== productId);
+        this.updateCartDisplay();
+        Utils.showNotification('Item removed from cart', 'success');
+    },
+
+    updateQuantity: function(productId, quantity) {
+        const item = AppState.cart.find(item => item.id === productId);
+        if (item) {
+            item.quantity = Math.max(1, quantity);
+            this.updateCartDisplay();
+        }
+    },
+
+    getTotal: function() {
+        return AppState.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    },
+
+    updateCartDisplay: function() {
+        const cartContainer = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        
+        if (!cartContainer) return;
+        
+        if (AppState.cart.length === 0) {
+            cartContainer.innerHTML = '<p class="text-muted">Your cart is empty</p>';
+            cartTotal.textContent = Utils.formatPrice(0);
+            return;
+        }
+        
+        cartContainer.innerHTML = AppState.cart.map(item => `
+            <div class="cart-item d-flex justify-content-between align-items-center mb-3 p-3 border rounded">
+                <div>
+                    <h6>${item.name}</h6>
+                    <small class="text-muted">${Utils.formatPrice(item.price)} each</small>
+                </div>
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                    <span class="mx-2">${item.quantity}</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                    <button class="btn btn-sm btn-danger ms-2" onclick="Cart.remove(${item.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        cartTotal.textContent = Utils.formatPrice(this.getTotal());
+    },
+
+    checkout: function() {
+        if (AppState.cart.length === 0) {
+            Utils.showNotification('Your cart is empty!', 'error');
+            return;
+        }
+        
+        const order = {
+            id: Date.now(),
+            items: [...AppState.cart],
+            total: this.getTotal(),
+            date: new Date().toLocaleDateString(),
+            status: 'Processing'
+        };
+        
+        AppState.orders.push(order);
+        AppState.cart = [];
+        
+        this.updateCartDisplay();
+        Dashboard.showShippingInfo(order);
+        Utils.showNotification('Order placed successfully!', 'success');
     }
 };
 
 // Dashboard Module
 const Dashboard = {
+    renderCustomerDashboard: function() {
+        const dashboardContainer = document.querySelector('.dashboard .container');
+        dashboardContainer.innerHTML = `
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-search"></i> Search Products</h3>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Search medications..." id="searchInput">
+                            <button class="btn btn-dashboard" id="searchBtn">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        <div id="searchResults">
+                            ${this.renderProductGrid()}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-shopping-cart"></i> Shopping Cart</h3>
+                        <div id="cartItems">
+                            <p class="text-muted">Your cart is empty</p>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <strong>Total: <span id="cartTotal">${Utils.formatPrice(0)}</span></strong>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-3" onclick="Cart.checkout()">
+                            <i class="fas fa-credit-card"></i> Checkout
+                        </button>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-cog"></i> Account Settings</h3>
+                        <button class="btn btn-dashboard mb-2 w-100" onclick="Dashboard.updateStatus()">
+                            <i class="fas fa-user-edit"></i> Update Status
+                        </button>
+                        <button class="btn btn-dashboard w-100" onclick="Dashboard.recoverPassword()">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="shippingModal" class="modal fade" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Shipping Information</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body" id="shippingContent">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        this.attachEventListeners();
+    },
+
+    renderStaffDashboard: function() {
+        const dashboardContainer = document.querySelector('.dashboard .container');
+        dashboardContainer.innerHTML = `
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-pills"></i> Prescription Management</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button class="btn btn-dashboard mb-2" onclick="Dashboard.uploadPrescription()">
+                                    <i class="fas fa-upload"></i> Upload Prescription
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-dashboard mb-2" onclick="Dashboard.requestRefill()">
+                                    <i class="fas fa-redo"></i> Request Refill
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-dashboard" onclick="Dashboard.viewHistory()">
+                                <i class="fas fa-history"></i> View Order History
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-truck"></i> Delivery Management</h3>
+                        <button class="btn btn-dashboard" onclick="Dashboard.scheduleDelivery()">
+                            <i class="fas fa-calendar-alt"></i> Schedule Delivery
+                        </button>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-user-tie"></i> Staff Functions</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button class="btn btn-dashboard mb-2" onclick="Dashboard.sendNotifications()">
+                                    <i class="fas fa-bell"></i> Send Notifications
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-dashboard mb-2" onclick="Dashboard.manageInventory()">
+                                    <i class="fas fa-boxes"></i> Manage Inventory
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-dashboard" onclick="Dashboard.viewRefillRequests()">
+                                <i class="fas fa-list"></i> View Refill Requests
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-bell"></i> Notifications</h3>
+                        <div id="notificationsList">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> Prescription refill available for Medication A
+                            </div>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i> Delivery scheduled for tomorrow
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-cog"></i> Account Settings</h3>
+                        <button class="btn btn-dashboard mb-2" onclick="Dashboard.updateStatus()">
+                            <i class="fas fa-user-edit"></i> Update Status
+                        </button>
+                        <button class="btn btn-dashboard" onclick="Dashboard.recoverPassword()">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    renderProductGrid: function(filteredProducts = products) {
+        return `
+            <div class="row">
+                ${filteredProducts.map(product => `
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">${product.name}</h5>
+                                <p class="card-text">${product.description}</p>
+                                <p class="card-text"><strong>${Utils.formatPrice(product.price)}</strong></p>
+                                <p class="card-text"><small class="text-muted">Stock: ${product.stock}</small></p>
+                                <button class="btn btn-primary btn-sm" onclick="Cart.add(${product.id})">
+                                    <i class="fas fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    },
+
+    attachEventListeners: function() {
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        
+        if (searchBtn) {
+            searchBtn.addEventListener('click', this.searchProducts);
+        }
+        
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.searchProducts();
+                }
+            });
+        }
+    },
+
+    searchProducts: function() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filteredProducts = products.filter(product => 
+            product.name.toLowerCase().includes(query) || 
+            product.description.toLowerCase().includes(query)
+        );
+        
+        document.getElementById('searchResults').innerHTML = Dashboard.renderProductGrid(filteredProducts);
+        Utils.showNotification(`Found ${filteredProducts.length} products`, 'success');
+    },
+
+    showShippingInfo: function(order) {
+        const shippingModal = new bootstrap.Modal(document.getElementById('shippingModal'));
+        const shippingContent = document.getElementById('shippingContent');
+        
+        shippingContent.innerHTML = `
+            <div class="text-center">
+                <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+                <h4 class="mt-3">Order Confirmed!</h4>
+                <p class="text-muted">Order ID: #${order.id}</p>
+            </div>
+            
+            <div class="mt-4">
+                <h5>Order Summary:</h5>
+                <div class="border rounded p-3">
+                    ${order.items.map(item => `
+                        <div class="d-flex justify-content-between">
+                            <span>${item.name} x${item.quantity}</span>
+                            <span>${Utils.formatPrice(item.price * item.quantity)}</span>
+                        </div>
+                    `).join('')}
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Total: ${Utils.formatPrice(order.total)}</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h5>Shipping Information:</h5>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Your order will be delivered within 2-3 business days.
+                </div>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-truck"></i> Standard Delivery</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Delivery Address: 28/1 BELLANTHARA ROAD, NEDIMALA, DEHIWALA</li>
+                    <li><i class="fas fa-phone"></i> Contact: +94 77 412 2776</li>
+                </ul>
+            </div>
+            
+            <div class="mt-4">
+                <h5>Tracking Information:</h5>
+                <div class="progress mb-2">
+                    <div class="progress-bar" role="progressbar" style="width: 25%"></div>
+                </div>
+                <small class="text-muted">Status: Order Processing</small>
+            </div>
+        `;
+        
+        shippingModal.show();
+    },
+
+    // Staff functions
     uploadPrescription: function() {
         Utils.showNotification('Prescription upload feature activated!', 'success');
-        // Simulate file upload
-        setTimeout(() => {
-            Utils.showNotification('Prescription uploaded successfully!', 'success');
-        }, 2000);
     },
 
     requestRefill: function() {
         Utils.showNotification('Refill request submitted!', 'success');
-        // Add to notifications
-        const notificationsList = document.getElementById('notificationsList');
-        const newNotification = document.createElement('div');
-        newNotification.className = 'alert alert-success';
-        newNotification.innerHTML = '<i class="fas fa-check-circle"></i> Refill request processed';
-        notificationsList.appendChild(newNotification);
     },
 
     viewHistory: function() {
         Utils.showNotification('Loading order history...', 'success');
-        // Simulate loading history
-        setTimeout(() => {
-            Utils.showNotification('Order history loaded!', 'success');
-        }, 1500);
     },
 
     scheduleDelivery: function() {
         Utils.showNotification('Delivery scheduling interface opened!', 'success');
-        // Simulate scheduling
-        setTimeout(() => {
-            Utils.showNotification('Delivery scheduled for tomorrow!', 'success');
-        }, 2000);
+    },
+
+    sendNotifications: function() {
+        Utils.showNotification('Notifications sent to all customers!', 'success');
+    },
+
+    manageInventory: function() {
+        Utils.showNotification('Inventory management system opened!', 'success');
+    },
+
+    viewRefillRequests: function() {
+        Utils.showNotification('Viewing all refill requests...', 'success');
     },
 
     updateStatus: function() {
@@ -165,6 +513,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('password').value;
         const userType = document.getElementById('userType').value;
 
+        if (!email || !password) {
+            Utils.showNotification('Please enter valid credentials.', 'error');
+            return;
+        }
+
         const button = this;
         const originalText = button.innerHTML;
         button.innerHTML = '<span class="spinner"></span>Logging in...';
@@ -174,7 +527,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (result.success) {
             elements.loginModal.hide();
-            // Clear form
             document.getElementById('email').value = '';
             document.getElementById('password').value = '';
         }
@@ -193,14 +545,6 @@ document.addEventListener('DOMContentLoaded', function() {
         elements.loginModal.show();
     });
 
-    // Dashboard button event listeners
-    document.getElementById('uploadPrescriptionBtn').addEventListener('click', Dashboard.uploadPrescription);
-    document.getElementById('requestRefillBtn').addEventListener('click', Dashboard.requestRefill);
-    document.getElementById('viewHistoryBtn').addEventListener('click', Dashboard.viewHistory);
-    document.getElementById('scheduleDeliveryBtn').addEventListener('click', Dashboard.scheduleDelivery);
-    document.getElementById('updateStatusBtn').addEventListener('click', Dashboard.updateStatus);
-    document.getElementById('recoverPasswordBtn').addEventListener('click', Dashboard.recoverPassword);
-
     // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -215,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Add animation on scroll
+    // Added animation on scroll
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -229,302 +573,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, observerOptions);
 
-    // Observe service cards and feature items
     document.querySelectorAll('.service-card, .feature-item').forEach(el => {
         observer.observe(el);
     });
 
     // Initialize navigation
     Utils.updateNavigationUI();
-});
 
-// Additional interactive features
-document.addEventListener('DOMContentLoaded', function() {
-    // Add hover effects to buttons
-    document.querySelectorAll('.btn').forEach(button => {
-        button.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-        });
-        
-        button.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
-
-    // Add typing effect to hero title
-    const heroTitle = document.querySelector('.hero h1');
-    const originalText = heroTitle.textContent;
-    heroTitle.textContent = '';
-    
-    let i = 0;
-    const typeWriter = function() {
-        if (i < originalText.length) {
-            heroTitle.textContent += originalText.charAt(i);
-            i++;
-            setTimeout(typeWriter, 100);
-        }
-    };
-    
-    setTimeout(typeWriter, 500);
-
-    // Add counter animation for statistics (if needed)
-    const animateCounter = function(element, target, duration = 2000) {
-        let start = 0;
-        const increment = target / (duration / 16);
-        
-        const counter = setInterval(() => {
-            start += increment;
-            element.textContent = Math.floor(start);
-            
-            if (start >= target) {
-                element.textContent = target;
-                clearInterval(counter);
-            }
-        }, 16);
-    };
-
-    // Form validation
-    const validateForm = function(email, password) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
-        if (!email || !emailRegex.test(email)) {
-            Utils.showNotification('Please enter a valid email address.', 'error');
-            return false;
-        }
-        
-        if (!password || password.length < 6) {
-            Utils.showNotification('Password must be at least 6 characters long.', 'error');
-            return false;
-        }
-        
-        return true;
-    };
-
-    // Enhanced login with validation
-    document.getElementById('loginSubmitBtn').addEventListener('click', async function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const userType = document.getElementById('userType').value;
-
-        if (!validateForm(email, password)) {
-            return;
-        }
-
-        const button = this;
-        const originalText = button.innerHTML;
-        button.innerHTML = '<span class="spinner"></span>Logging in...';
-        button.disabled = true;
-
-        try {
-            const result = await Auth.login(email, password, userType);
-            
-            if (result.success) {
-                elements.loginModal.hide();
-                // Clear form
-                document.getElementById('email').value = '';
-                document.getElementById('password').value = '';
-            }
-        } catch (error) {
-            Utils.showNotification('Login failed. Please try again.', 'error');
-        } finally {
-            button.innerHTML = originalText;
-            button.disabled = false;
-        }
-    });
-
-    // Add Enter key support for login form
+    // Added Enter key support for login form
     document.getElementById('password').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             document.getElementById('loginSubmitBtn').click();
         }
     });
 
-    // Dynamic notification system
-    const NotificationSystem = {
-        queue: [],
-        isShowing: false,
-
-        add: function(message, type = 'success') {
-            this.queue.push({ message, type });
-            this.processQueue();
-        },
-
-        processQueue: function() {
-            if (this.isShowing || this.queue.length === 0) return;
-            
-            const { message, type } = this.queue.shift();
-            this.show(message, type);
-        },
-
-        show: function(message, type) {
-            this.isShowing = true;
-            const notification = elements.notification;
-            
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-                this.isShowing = false;
-                
-                // Process next in queue
-                setTimeout(() => this.processQueue(), 500);
-            }, 3000);
-        }
-    };
-
-    // Replace the existing showNotification with the new system
-    Utils.showNotification = NotificationSystem.add.bind(NotificationSystem);
-
-    // Add some demo functionality for staff features
-    const StaffFeatures = {
-        sendNotifications: function() {
-            Utils.showNotification('Notifications sent to all customers!', 'success');
-        },
-
-        manageInventory: function() {
-            Utils.showNotification('Inventory management system opened!', 'success');
-        },
-
-        viewRefillRequests: function() {
-            Utils.showNotification('Viewing all refill requests...', 'success');
-        }
-    };
-
-    // Add staff-specific features to dashboard when staff logs in
-    const originalLogin = Auth.login;
-    Auth.login = async function(email, password, userType) {
-        const result = await originalLogin.call(this, email, password, userType);
+    // Added typing effect to hero title
+    const heroTitle = document.querySelector('.hero h1');
+    if (heroTitle) {
+        const originalText = heroTitle.textContent;
+        heroTitle.textContent = '';
         
-        if (result.success && userType === 'staff') {
-            // Add staff-specific buttons to dashboard
-            setTimeout(() => {
-                const staffCard = document.createElement('div');
-                staffCard.className = 'dashboard-card';
-                staffCard.innerHTML = `
-                    <h3><i class="fas fa-user-tie"></i> Staff Functions</h3>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <button class="btn btn-dashboard mb-2" id="sendNotificationsBtn">
-                                <i class="fas fa-bell"></i> Send Notifications
-                            </button>
-                        </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-dashboard mb-2" id="manageInventoryBtn">
-                                <i class="fas fa-boxes"></i> Manage Inventory
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mt-3">
-                        <button class="btn btn-dashboard" id="viewRefillRequestsBtn">
-                            <i class="fas fa-list"></i> View Refill Requests
-                        </button>
-                    </div>
-                `;
-                
-                document.querySelector('.dashboard .container .row .col-md-8').appendChild(staffCard);
-                
-                // Add event listeners for staff buttons
-                document.getElementById('sendNotificationsBtn').addEventListener('click', StaffFeatures.sendNotifications);
-                document.getElementById('manageInventoryBtn').addEventListener('click', StaffFeatures.manageInventory);
-                document.getElementById('viewRefillRequestsBtn').addEventListener('click', StaffFeatures.viewRefillRequests);
-            }, 100);
-        }
+        let i = 0;
+        const typeWriter = function() {
+            if (i < originalText.length) {
+                heroTitle.textContent += originalText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        };
         
-        return result;
-    };
-
-    // Add search functionality (placeholder)
-    const searchHTML = `
-        <div class="dashboard-card">
-            <h3><i class="fas fa-search"></i> Search Products</h3>
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search medications..." id="searchInput">
-                <button class="btn btn-dashboard" id="searchBtn">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </div>
-    `;
-
-    // Initialize search when dashboard loads
-    const originalToggleSections = Utils.toggleSections;
-    Utils.toggleSections = function(showDashboard = false) {
-        originalToggleSections.call(this, showDashboard);
-        
-        if (showDashboard) {
-            setTimeout(() => {
-                const searchContainer = document.querySelector('.dashboard .container .row .col-md-4');
-                if (searchContainer && !document.getElementById('searchInput')) {
-                    searchContainer.insertAdjacentHTML('beforeend', searchHTML);
-                    
-                    document.getElementById('searchBtn').addEventListener('click', function() {
-                        const query = document.getElementById('searchInput').value;
-                        if (query) {
-                            Utils.showNotification(`Searching for "${query}"...`, 'success');
-                            setTimeout(() => {
-                                Utils.showNotification(`Found 5 results for "${query}"`, 'success');
-                            }, 1500);
-                        }
-                    });
-                }
-            }, 100);
-        }
-    };
-
-    // Add real-time clock to dashboard
-    const addClock = function() {
-        const clockHTML = `
-            <div class="dashboard-card">
-                <h3><i class="fas fa-clock"></i> Current Time</h3>
-                <div class="text-center">
-                    <h4 id="currentTime" style="color: var(--primary-color);"></h4>
-                </div>
-            </div>
-        `;
-        
-        const clockContainer = document.querySelector('.dashboard .container .row .col-md-4');
-        if (clockContainer) {
-            clockContainer.insertAdjacentHTML('beforeend', clockHTML);
-            
-            // Update time every second
-            const updateTime = () => {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString();
-                const dateString = now.toLocaleDateString();
-                document.getElementById('currentTime').innerHTML = `${timeString}<br><small>${dateString}</small>`;
-            };
-            
-            updateTime();
-            setInterval(updateTime, 1000);
-        }
-    };
-
-    // Add clock when dashboard is shown
-    const originalToggleSections2 = Utils.toggleSections;
-    Utils.toggleSections = function(showDashboard = false) {
-        originalToggleSections2.call(this, showDashboard);
-        
-        if (showDashboard) {
-            setTimeout(addClock, 200);
-        }
-    };
+        setTimeout(typeWriter, 500);
+    }
 });
 
-// Service Worker registration (for PWA functionality)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        // Note: In a real deployment, you would register a service worker here
-        console.log('Service Worker support detected');
-    });
-}
-
-// Add keyboard shortcuts
+// keyboard shortcuts
 document.addEventListener('keydown', function(e) {
-    // Ctrl+L for login
     if (e.ctrlKey && e.key === 'l') {
         e.preventDefault();
         if (!AppState.isLoggedIn) {
@@ -532,43 +615,23 @@ document.addEventListener('keydown', function(e) {
         }
     }
     
-    // Escape to close modals
     if (e.key === 'Escape') {
         elements.loginModal.hide();
     }
 });
 
-// Add print functionality
-const printPage = function() {
-    window.print();
+// Form validation
+const validateForm = function(email, password) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!email || !emailRegex.test(email)) {
+        Utils.showNotification('Please enter a valid email address.', 'error');
+        return false;
+    }
+    
+    if (!password || password.length < 6) {
+        Utils.showNotification('Password must be at least 6 characters long.', 'error');
+        return false;
+    }
+    return true;
 };
-
-// Add accessibility features
-document.addEventListener('DOMContentLoaded', function() {
-    // Focus management for modals
-    document.getElementById('loginModal').addEventListener('shown.bs.modal', function() {
-        document.getElementById('email').focus();
-    });
-    
-    // Skip to content link
-    const skipLink = document.createElement('a');
-    skipLink.href = '#main-content';
-    skipLink.textContent = 'Skip to main content';
-    skipLink.className = 'sr-only sr-only-focusable';
-    skipLink.style.cssText = `
-        position: absolute;
-        top: -40px;
-        left: 6px;
-        background: var(--primary-color);
-        color: white;
-        padding: 8px 16px;
-        text-decoration: none;
-        border-radius: 4px;
-        z-index: 1000;
-    `;
-    
-    document.body.insertBefore(skipLink, document.body.firstChild);
-    
-    // Add main content id
-    document.getElementById('home').id = 'main-content';
-});
