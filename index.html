@@ -6,7 +6,543 @@
     <title>Kingsway Healthcare - Your Health, Our Priority</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/index.css">
+    <style>
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #1e3a8a;
+            --accent-color: #f59e0b;
+            --light-gray: #f8f9fa;
+            --dark-gray: #6c757d;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --vitamin-color: #ff6b6b;
+            --supplement-color: #4ecdc4;
+            --medicine-color: #45b7d1;
+            --skincare-color: #96ceb4;
+            --baby-color: #ffeaa7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--accent-color) !important;
+            transform: translateY(-2px);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(44, 90, 160, 0.9), rgba(30, 58, 138, 0.9)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23e5e7eb" width="1200" height="600"/><g fill="%23ffffff" opacity="0.1"><circle cx="300" cy="150" r="80"/><circle cx="900" cy="400" r="60"/><circle cx="600" cy="300" r="100"/></g></svg>');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 140px 0 60px;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--accent-color);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            color: white;
+        }
+
+        /* Search Section */
+        .search-section {
+            padding: 40px 0;
+            background: white;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Product Categories Section */
+        .product-categories {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .category-card.vitamins { border-color: var(--vitamin-color); }
+        .category-card.supplements { border-color: var(--supplement-color); }
+        .category-card.medicines { border-color: var(--medicine-color); }
+        .category-card.skincare { border-color: var(--skincare-color); }
+        .category-card.baby { border-color: var(--baby-color); }
+
+        .category-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .vitamins .category-icon { color: var(--vitamin-color); }
+        .supplements .category-icon { color: var(--supplement-color); }
+        .medicines .category-icon { color: var(--medicine-color); }
+        .skincare .category-icon { color: var(--skincare-color); }
+        .baby .category-icon { color: var(--baby-color); }
+
+        .category-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .category-card p {
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+        }
+
+        /* Products Display Section */
+        .products-section {
+            padding: 80px 0;
+            display: none;
+        }
+
+        .products-section.show {
+            display: block;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .product-image i {
+            font-size: 3rem;
+            padding: 1rem;
+            border-radius: 50%;
+            background: #f8f9fa;
+        }
+
+        .product-details {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.95);
+            padding: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .product-card:hover .product-details {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--success-color);
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .add-to-cart-btn:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .service-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Customer Details Section */
+        .customer-details {
+            padding: 80px 0;
+            background: var(--light-gray);
+            display: none;
+        }
+
+        .customer-details.show {
+            display: block;
+        }
+
+        .details-form {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Checkout Section */
+        .checkout-section {
+            padding: 80px 0;
+            background: white;
+            display: none;
+        }
+
+        .checkout-section.show {
+            display: block;
+        }
+
+        .order-summary {
+            background: var(--light-gray);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        /* Cart Sidebar */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cart-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: white;
+            z-index: 1050;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .cart-content {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-total {
+            padding: 1rem;
+            border-top: 2px solid var(--primary-color);
+            background: var(--light-gray);
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+            padding: 40px 0;
+            margin-top: 80px;
+        }
+
+        .dashboard.show {
+            display: block;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-card h3 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-processing {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-delivered {
+            background: #d1edff;
+            color: #0c5460;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 40px 0 20px;
+        }
+
+        .footer h5 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .footer a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background-color: var(--success-color);
+        }
+
+        .notification.error {
+            background-color: var(--danger-color);
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .category-card {
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Hide main sections when dashboard is shown */
+        .dashboard-mode .main-content {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -22,7 +558,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#home">Home</a>
+                            <a class="nav-link" href="#" onclick="showHome()">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#products">Products</a>
@@ -34,16 +570,16 @@
                             <a class="nav-link" href="#contact">Contact</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link position-relative" href="#" id="cartBtn">
+                            <a class="nav-link position-relative" href="#" onclick="Cart.openCart()">
                                 <i class="fas fa-shopping-cart"></i> Cart
                                 <span class="cart-badge d-none" id="cartBadge">0</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="loginBtn">Login</a>
+                        <li class="nav-item" id="loginItem">
+                            <a class="nav-link" href="#" onclick="showLogin()">Login</a>
                         </li>
                         <li class="nav-item d-none" id="logoutItem">
-                            <a class="nav-link" href="#" id="logoutBtn">Logout</a>
+                            <a class="nav-link" href="#" onclick="Auth.logout()">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -51,193 +587,367 @@
         </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="container">
-            <div class="animate-fade-in">
-                <h1>Your Health, Our Priority</h1>
-                <p>Browse our wide range of quality medications and healthcare products. Fast delivery, professional service, trusted care.</p>
-                <a href="#products" class="btn btn-primary-custom">Shop Now</a>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="container">
+                <div class="animate-fade-in">
+                    <h1>Your Health, Our Priority</h1>
+                    <p>Browse our wide range of quality medications and healthcare products. Fast delivery, professional service, trusted care.</p>
+                    <a href="#products" class="btn btn-primary-custom">Shop Now</a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Product Search Section -->
-    <section class="product-search">
-        <div class="container">
-            <div class="search-container">
-                <div class="input-group">
-                    <input type="text" class="form-control form-control-lg" placeholder="Search for medications, vitamins, supplements..." id="searchInput">
-                    <button class="btn btn-primary-custom" type="button" id="searchBtn">
-                        <i class="fas fa-search"></i> Search
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="container">
+                <div class="search-container">
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control" placeholder="Search for medications, vitamins, supplements..." id="searchInput">
+                        <button class="btn btn-primary-custom" type="button" onclick="searchProducts()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Categories Section -->
+        <section class="product-categories" id="products">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="mb-4">Our Products</h2>
+                    <p class="lead">Quality medications and healthcare products at affordable prices</p>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+                        <div class="category-card vitamins" onclick="showProducts('vitamins')">
+                            <div class="category-icon">
+                                <i class="fas fa-lemon"></i>
+                            </div>
+                            <h3>Vitamins</h3>
+                            <p>Essential vitamins for daily health and wellness support</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+                        <div class="category-card supplements" onclick="showProducts('supplements')">
+                            <div class="category-icon">
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                            <h3>Supplements</h3>
+                            <p>Nutritional supplements for enhanced health and performance</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+                        <div class="category-card medicines" onclick="showProducts('medicines')">
+                            <div class="category-icon">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                            <h3>Medicines</h3>
+                            <p>Prescription and over-the-counter medications</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+                        <div class="category-card skincare" onclick="showProducts('skincare')">
+                            <div class="category-icon">
+                                <i class="fas fa-spa"></i>
+                            </div>
+                            <h3>Skincare</h3>
+                            <p>Quality skincare products for healthy, radiant skin</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+                        <div class="category-card baby" onclick="showProducts('baby')">
+                            <div class="category-icon">
+                                <i class="fas fa-baby"></i>
+                            </div>
+                            <h3>Baby Care</h3>
+                            <p>Gentle and safe products for your little ones</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Display Section -->
+        <section class="products-section" id="productsDisplay">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 id="categoryTitle">Products</h2>
+                    <button class="btn btn-secondary" onclick="backToCategories()">
+                        <i class="fas fa-arrow-left"></i> Back to Categories
                     </button>
                 </div>
+                <div class="row" id="productsGrid">
+                    <!-- Products will be loaded here -->
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Products Section -->
-    <section class="products-section" id="products">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="mb-4">Our Products</h2>
-                <p class="lead">Quality medications and healthcare products at affordable prices</p>
-            </div>
-            
-            <!-- Category Filters -->
-            <div class="category-filters text-center">
-                <button class="filter-btn active" data-category="all">All Products</button>
-                <button class="filter-btn" data-category="vitamins">Vitamins</button>
-                <button class="filter-btn" data-category="supplements">Supplements</button>
-                <button class="filter-btn" data-category="medicines">Medicines</button>
-                <button class="filter-btn" data-category="skincare">Skincare</button>
-                <button class="filter-btn" data-category="baby">Baby Care</button>
-            </div>
-            
-            <div class="row" id="productsGrid">
-                <!-- Products will be loaded here by JavaScript -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading products...</span>
+        <!-- Services Section -->
+        <section class="services" id="services">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="mb-4">Our Services</h2>
+                    <p class="lead">Comprehensive pharmacy services designed for your convenience</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-prescription-bottle-alt"></i>
+                            </div>
+                            <h3>Prescription Management</h3>
+                            <p>Upload prescriptions, request refills, and track your medication history all in one place.</p>
+                        </div>
                     </div>
-                    <p class="mt-2">Loading products...</p>
+                    <div class="col-md-4 mb-4">
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <h3>Home Delivery</h3>
+                            <p>Schedule convenient delivery times and get your medications delivered right to your door.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <h3>Smart Notifications</h3>
+                            <p>Receive timely reminders for medication refills and important health updates.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Services Section -->
-    <section class="services" id="services">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="mb-4">Our Services</h2>
-                <p class="lead">Comprehensive pharmacy services designed for your convenience</p>
+        <!-- Customer Details Section -->
+        <section class="customer-details" id="customerDetails">
+            <div class="container">
+                <div class="details-form">
+                    <h2 class="text-center mb-4 text-primary">Customer Details</h2>
+                    <form id="customerForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="customerName" class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" id="customerName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="customerPhone" class="form-label">Phone Number *</label>
+                                <input type="tel" class="form-control" id="customerPhone" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerEmail" class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" id="customerEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerAddress" class="form-label">Delivery Address *</label>
+                            <textarea class="form-control" id="customerAddress" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerNotes" class="form-label">Special Instructions (Optional)</label>
+                            <textarea class="form-control" id="customerNotes" rows="2"></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary-custom btn-lg">
+                                <i class="fas fa-arrow-right"></i> Proceed to Checkout
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-prescription-bottle-alt"></i>
-                        </div>
-                        <h3>Prescription Management</h3>
-                        <p>Upload prescriptions, request refills, and track your medication history all in one place.</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-truck"></i>
-                        </div>
-                        <h3>Home Delivery</h3>
-                        <p>Schedule convenient delivery times and get your medications delivered right to your door.</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-bell"></i>
-                        </div>
-                        <h3>Smart Notifications</h3>
-                        <p>Receive timely reminders for medication refills and important health updates.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Contact Section -->
-    <section class="py-5 bg-white" id="contact">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="mb-4">Contact Us</h2>
-                <p class="lead">Get in touch with our healthcare professionals</p>
+        <!-- Checkout Section -->
+        <section class="checkout-section" id="checkout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h2 class="mb-4 text-primary">Order Summary</h2>
+                        <div class="order-summary">
+                            <div id="orderItems"></div>
+                            <div class="text-end mt-3">
+                                <h4>Total: <span id="orderTotal" class="text-success">Rs. 0</span></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <h3 class="mb-4">Order Status</h3>
+                        <div class="alert alert-info">
+                            <i class="fas fa-clock"></i> Processing your order...
+                            <br><small>Estimated delivery: 2-3 business days</small>
+                        </div>
+                        <button class="btn btn-success btn-lg w-100" onclick="confirmOrder()">
+                            <i class="fas fa-check"></i> Confirm Order
+                        </button>
+                        <button class="btn btn-secondary w-100 mt-2" onclick="backToDetails()">
+                            <i class="fas fa-arrow-left"></i> Back to Details
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <div class="text-center">
-                        <i class="fas fa-phone-alt fa-2x text-primary mb-3"></i>
-                        <h4>Call Us</h4>
-                        <p>+94 77 412 2776</p>
-                    </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="py-5 bg-white" id="contact">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="mb-4">Contact Us</h2>
+                    <p class="lead">Get in touch with our healthcare professionals</p>
                 </div>
-                <div class="col-lg-4 mb-4">
-                    <div class="text-center">
-                        <i class="fas fa-envelope fa-2x text-primary mb-3"></i>
-                        <h4>Email Us</h4>
-                        <p>pharma.kingsway@gmail.com</p>
+                <div class="row">
+                    <div class="col-lg-4 mb-4">
+                        <div class="text-center">
+                            <i class="fas fa-phone-alt fa-2x text-primary mb-3"></i>
+                            <h4>Call Us</h4>
+                            <p>+94 77 412 2776</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-4 mb-4">
-                    <div class="text-center">
-                        <a href="http://google.com/maps/place/kingsway+healthcare+(pvt)+ltd/@6.8514829,79.8819491,17z/data=!3m1!4b1!4m6!3m5!1s0x3ae25b4501c1bf09:0x736c6c7c80c8e2f6!8m2!3d6.8514829!4d79.884524!16s%2Fg%2F11p5c2l95b?entry=ttu&g_ep=EgoyMDI1MDcwOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" style="text-decoration: none; color: inherit;">
+                    <div class="col-lg-4 mb-4">
+                        <div class="text-center">
+                            <i class="fas fa-envelope fa-2x text-primary mb-3"></i>
+                            <h4>Email Us</h4>
+                            <p>pharma.kingsway@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="text-center">
                             <i class="fas fa-map-marker-alt fa-2x text-primary mb-3"></i>
                             <h4>Visit Us</h4>
                             <p>28/1 BELLANTHARA ROAD, NEDIMALA, DEHIWALA.</p>
-                        </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer class="footer">
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Kingsway Healthcare</h5>
+                        <p>Your trusted healthcare partner providing quality pharmaceutical services with convenience and care.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Quick Links</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="#home">Home</a></li>
+                            <li><a href="#products">Products</a></li>
+                            <li><a href="#services">Services</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Follow Us</h5>
+                        <div class="social-links">
+                            <a href="https://web.facebook.com/gadget.frenzy.2025" class="me-3"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="me-3"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <div class="text-center">
+                    <p>&copy; 2024 Kingsway Healthcare. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="dashboard" id="adminDashboard">
         <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary">Admin Dashboard</h2>
+                <button class="btn btn-secondary" onclick="showHome()">
+                    <i class="fas fa-home"></i> Back to Home
+                </button>
+            </div>
+            
             <div class="row">
-                <div class="col-md-4">
-                    <h5>Kingsway Healthcare</h5>
-                    <p>Your trusted healthcare partner providing quality pharmaceutical services with convenience and care.</p>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="dashboard-card">
+                        <h5 class="text-success"><i class="fas fa-shopping-bag"></i> Total Orders</h5>
+                        <h2 id="totalOrders">0</h2>
+                        <p class="text-muted">Orders processed</p>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#products">Products</a></li>
-                        <li><a href="#services">Services</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="dashboard-card">
+                        <h5 class="text-info"><i class="fas fa-users"></i> Total Customers</h5>
+                        <h2 id="totalCustomers">0</h2>
+                        <p class="text-muted">Registered customers</p>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <h5>Follow Us</h5>
-                    <div class="social-links">
-                        <a href="https://web.facebook.com/gadget.frenzy.2025" class="me-3"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="me-3"><i class="fab fa-linkedin-in"></i></a>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="dashboard-card">
+                        <h5 class="text-warning"><i class="fas fa-dollar-sign"></i> Revenue</h5>
+                        <h2 id="totalRevenue">Rs. 0</h2>
+                        <p class="text-muted">Total earnings</p>
                     </div>
                 </div>
             </div>
-            <hr class="my-4">
-            <div class="text-center">
-                <p>&copy; 2024 Kingsway Healthcare. All rights reserved.</p>
+
+            <div class="dashboard-card">
+                <h3>Recent Orders</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTable">
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">No orders yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </footer>
+    </div>
 
     <!-- Cart Sidebar -->
-    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-overlay" id="cartOverlay" onclick="Cart.closeCart()"></div>
     <div class="cart-sidebar" id="cartSidebar">
-        <div class="cart-header d-flex justify-content-between align-items-center">
+        <div class="cart-header">
             <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Shopping Cart</h5>
-            <button class="btn btn-link text-white" id="closeCartBtn">
+            <button class="btn btn-link text-white float-end" onclick="Cart.closeCart()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="cart-content">
             <div id="cartItems">
-                <p class="text-muted text-center">Your cart is empty</p>
-            </div>
-            <div class="cart-total mt-4 pt-3 border-top">
-                <div class="d-flex justify-content-between mb-3">
-                    <strong>Total: <span id="cartTotal">Rs. 0</span></strong>
+                <div class="text-center py-4">
+                    <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Your cart is empty</p>
                 </div>
-                <button class="btn btn-primary-custom w-100" id="checkoutBtn" disabled>
-                    <i class="fas fa-credit-card"></i> Proceed to Checkout
-                </button>
-                <p class="text-muted text-center mt-2 small">
-                    <i class="fas fa-info-circle"></i> Please login to complete your purchase
-                </p>
             </div>
+        </div>
+        <div class="cart-total">
+            <div class="d-flex justify-content-between mb-3">
+                <strong>Total: <span id="cartTotal">Rs. 0</span></strong>
+            </div>
+            <button class="btn btn-primary-custom w-100 mb-2" id="proceedBtn" onclick="proceedToDetails()" disabled>
+                <i class="fas fa-arrow-right"></i> Proceed
+            </button>
+            <button class="btn btn-secondary w-100" onclick="Cart.closeCart()">
+                <i class="fas fa-shopping-bag"></i> Continue Shopping
+            </button>
         </div>
     </div>
 
@@ -245,16 +955,16 @@
     <div class="modal fade" id="loginModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title">Login to Your Account</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="userType" class="form-label">Login as:</label>
                         <select class="form-control" id="userType">
                             <option value="customer">Customer</option>
-                            <option value="staff">Pharmacy Staff</option>
+                            <option value="admin">Admin</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -266,8 +976,8 @@
                         <input type="password" class="form-control" id="password" placeholder="Enter your password">
                     </div>
                     <div class="d-grid gap-2">
-                        <button class="btn btn-primary" id="loginSubmitBtn">Login</button>
-                        <button class="btn btn-link" id="registerBtn">Don't have an account? Register</button>
+                        <button class="btn btn-primary" onclick="handleLogin()">Login</button>
+                        <button class="btn btn-link">Don't have an account? Register</button>
                     </div>
                 </div>
             </div>
@@ -277,8 +987,523 @@
     <!-- Notification Container -->
     <div id="notification" class="notification"></div>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="js/index.js"></script>
+    <script>
+        // Product Database
+        const products = {
+            vitamins: [
+                { id: 1, name: "Vitamin C 1000mg", price: 650, description: "Immune system support tablets - 30 tablets", stock: 45, image: "fas fa-lemon" },
+                { id: 2, name: "Vitamin D3 2000 IU", price: 890, description: "Bone health and immunity support - 60 capsules", stock: 35, image: "fas fa-sun" },
+                { id: 3, name: "Vitamin B Complex", price: 780, description: "Energy metabolism support - 30 tablets", stock: 38, image: "fas fa-bolt" },
+                { id: 4, name: "Vitamin E 400 IU", price: 720, description: "Antioxidant protection - 30 soft gels", stock: 28, image: "fas fa-seedling" }
+            ],
+            supplements: [
+                { id: 5, name: "Omega 3 Fish Oil", price: 1250, description: "High-quality omega-3 supplement - 60 capsules", stock: 50, image: "fas fa-fish" },
+                { id: 6, name: "Calcium + Vitamin D", price: 890, description: "Essential calcium and vitamin D supplement - 60 tablets", stock: 30, image: "fas fa-bone" },
+                { id: 7, name: "Multivitamin Complex", price: 1480, description: "Complete daily nutrition supplement - 30 tablets", stock: 25, image: "fas fa-pills" },
+                { id: 8, name: "Iron + Folic Acid", price: 720, description: "For anemia prevention and treatment - 30 tablets", stock: 35, image: "fas fa-heart" }
+            ],
+            medicines: [
+                { id: 9, name: "Paracetamol 500mg", price: 120, description: "Pain relief and fever reducer - 10 tablets", stock: 100, image: "fas fa-thermometer-half" },
+                { id: 10, name: "Ibuprofen 400mg", price: 180, description: "Anti-inflammatory pain relief - 10 tablets", stock: 85, image: "fas fa-medkit" },
+                { id: 11, name: "Antacid Tablets", price: 250, description: "Heartburn and acid indigestion relief - 20 tablets", stock: 70, image: "fas fa-pills" },
+                { id: 12, name: "Cough Syrup", price: 320, description: "Dry cough relief - 100ml bottle", stock: 45, image: "fas fa-lungs" }
+            ],
+            skincare: [
+                { id: 13, name: "Sunscreen SPF 50", price: 890, description: "Broad spectrum UV protection - 75ml", stock: 40, image: "fas fa-sun" },
+                { id: 14, name: "Moisturizing Cream", price: 650, description: "Daily hydrating cream - 100ml", stock: 35, image: "fas fa-tint" },
+                { id: 15, name: "Anti-Acne Gel", price: 780, description: "Acne treatment gel - 30g", stock: 25, image: "fas fa-spa" },
+                { id: 16, name: "Face Wash", price: 420, description: "Gentle daily cleanser - 150ml", stock: 50, image: "fas fa-pump-soap" }
+            ],
+            baby: [
+                { id: 17, name: "Baby Lotion", price: 580, description: "Gentle moisturizing lotion - 200ml", stock: 30, image: "fas fa-baby" },
+                { id: 18, name: "Baby Shampoo", price: 450, description: "Tear-free gentle shampoo - 200ml", stock: 35, image: "fas fa-shower" },
+                { id: 19, name: "Diaper Rash Cream", price: 680, description: "Protective barrier cream - 100g", stock: 25, image: "fas fa-heart" },
+                { id: 20, name: "Baby Powder", price: 320, description: "Gentle talc-free powder - 200g", stock: 40, image: "fas fa-feather-alt" }
+            ]
+        };
+
+        // Application State
+        let appState = {
+            isLoggedIn: false,
+            userType: null,
+            currentUser: null,
+            cart: [],
+            orders: [],
+            currentCategory: null,
+            currentSection: 'home'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartUI();
+            showNotification('Welcome to Kingsway Healthcare!', 'success');
+        });
+
+        // Navigation Functions
+        function showHome() {
+            hideAllSections();
+            document.querySelector('.main-content').style.display = 'block';
+            document.body.classList.remove('dashboard-mode');
+            appState.currentSection = 'home';
+        }
+
+        function showProducts(category) {
+            appState.currentCategory = category;
+            document.getElementById('categoryTitle').textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            document.querySelector('.product-categories').style.display = 'none';
+            document.querySelector('.products-section').classList.add('show');
+            renderProducts(category);
+            document.querySelector('.products-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function backToCategories() {
+            document.querySelector('.products-section').classList.remove('show');
+            document.querySelector('.product-categories').style.display = 'block';
+            document.querySelector('.product-categories').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideAllSections() {
+            document.querySelector('.customer-details').classList.remove('show');
+            document.querySelector('.checkout-section').classList.remove('show');
+            document.querySelector('.dashboard').classList.remove('show');
+            document.querySelector('.products-section').classList.remove('show');
+            document.querySelector('.product-categories').style.display = 'block';
+        }
+
+        function showLogin() {
+            const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+            modal.show();
+        }
+
+        // Product Functions
+        function renderProducts(category) {
+            const grid = document.getElementById('productsGrid');
+            const categoryProducts = products[category] || [];
+
+            grid.innerHTML = categoryProducts.map(product => `
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <i class="${product.image}"></i>
+                        </div>
+                        <div class="product-body">
+                            <h5 class="product-title">${product.name}</h5>
+                            <div class="product-price">Rs. ${product.price.toLocaleString()}</div>
+                            <div class="product-details">
+                                <p class="small mb-2">${product.description}</p>
+                                <p class="small text-muted mb-2">Stock: ${product.stock} available</p>
+                                <button class="add-to-cart-btn" onclick="Cart.add(${product.id}, '${category}')" ${product.stock === 0 ? 'disabled' : ''}>
+                                    <i class="fas fa-cart-plus"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!query) {
+                showNotification('Please enter a search term', 'error');
+                return;
+            }
+
+            let allProducts = [];
+            Object.values(products).forEach(categoryProducts => {
+                allProducts = allProducts.concat(categoryProducts);
+            });
+
+            const searchResults = allProducts.filter(product =>
+                product.name.toLowerCase().includes(query) ||
+                product.description.toLowerCase().includes(query)
+            );
+
+            if (searchResults.length > 0) {
+                document.getElementById('categoryTitle').textContent = `Search Results for "${query}"`;
+                document.querySelector('.product-categories').style.display = 'none';
+                document.querySelector('.products-section').classList.add('show');
+                
+                const grid = document.getElementById('productsGrid');
+                grid.innerHTML = searchResults.map(product => `
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <i class="${product.image}"></i>
+                            </div>
+                            <div class="product-body">
+                                <h5 class="product-title">${product.name}</h5>
+                                <div class="product-price">Rs. ${product.price.toLocaleString()}</div>
+                                <div class="product-details">
+                                    <p class="small mb-2">${product.description}</p>
+                                    <p class="small text-muted mb-2">Stock: ${product.stock} available</p>
+                                    <button class="add-to-cart-btn" onclick="Cart.add(${product.id})" ${product.stock === 0 ? 'disabled' : ''}>
+                                        <i class="fas fa-cart-plus"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                showNotification(`Found ${searchResults.length} products`, 'success');
+                document.querySelector('.products-section').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showNotification('No products found', 'error');
+            }
+        }
+
+        // Cart Functions
+        const Cart = {
+            add: function(productId, category = null) {
+                // Find product in all categories
+                let product = null;
+                if (category) {
+                    product = products[category].find(p => p.id === productId);
+                } else {
+                    // Search all categories
+                    for (let cat in products) {
+                        product = products[cat].find(p => p.id === productId);
+                        if (product) break;
+                    }
+                }
+
+                if (!product || product.stock === 0) {
+                    showNotification('Product not available!', 'error');
+                    return;
+                }
+
+                const existingItem = appState.cart.find(item => item.id === productId);
+                if (existingItem) {
+                    if (existingItem.quantity < product.stock) {
+                        existingItem.quantity += 1;
+                        showNotification(`${product.name} quantity updated!`, 'success');
+                    } else {
+                        showNotification('Maximum stock reached!', 'error');
+                        return;
+                    }
+                } else {
+                    appState.cart.push({ ...product, quantity: 1 });
+                    showNotification(`${product.name} added to cart!`, 'success');
+                }
+
+                this.updateDisplay();
+                updateCartUI();
+            },
+
+            remove: function(productId) {
+                const item = appState.cart.find(item => item.id === productId);
+                appState.cart = appState.cart.filter(item => item.id !== productId);
+                this.updateDisplay();
+                updateCartUI();
+                if (item) {
+                    showNotification(`${item.name} removed from cart`, 'success');
+                }
+            },
+
+            updateQuantity: function(productId, newQuantity) {
+                const item = appState.cart.find(item => item.id === productId);
+                if (!item) return;
+
+                if (newQuantity <= 0) {
+                    this.remove(productId);
+                    return;
+                }
+
+                if (newQuantity <= item.stock) {
+                    item.quantity = newQuantity;
+                    this.updateDisplay();
+                    updateCartUI();
+                } else {
+                    showNotification('Maximum stock reached!', 'error');
+                }
+            },
+
+            getTotal: function() {
+                return appState.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            },
+
+            updateDisplay: function() {
+                const cartItems = document.getElementById('cartItems');
+                const cartTotal = document.getElementById('cartTotal');
+
+                if (appState.cart.length === 0) {
+                    cartItems.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Your cart is empty</p>
+                        </div>
+                    `;
+                    cartTotal.textContent = 'Rs. 0';
+                    document.getElementById('proceedBtn').disabled = true;
+                    return;
+                }
+
+                cartItems.innerHTML = appState.cart.map(item => `
+                    <div class="cart-item">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">${item.name}</h6>
+                                <small class="text-muted">Rs. ${item.price.toLocaleString()} each</small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="Cart.remove(${item.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                                <span class="btn btn-outline-secondary">${item.quantity}</span>
+                                <button class="btn btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                            </div>
+                            <strong class="text-success">Rs. ${(item.price * item.quantity).toLocaleString()}</strong>
+                        </div>
+                    </div>
+                `).join('');
+
+                cartTotal.textContent = `Rs. ${this.getTotal().toLocaleString()}`;
+                document.getElementById('proceedBtn').disabled = false;
+            },
+
+            openCart: function() {
+                document.getElementById('cartSidebar').classList.add('open');
+                document.getElementById('cartOverlay').classList.add('show');
+                this.updateDisplay();
+            },
+
+            closeCart: function() {
+                document.getElementById('cartSidebar').classList.remove('open');
+                document.getElementById('cartOverlay').classList.remove('show');
+            }
+        };
+
+        // Authentication Functions
+        const Auth = {
+            logout: function() {
+                appState.isLoggedIn = false;
+                appState.userType = null;
+                appState.currentUser = null;
+                appState.cart = [];
+                
+                updateNavigationUI();
+                updateCartUI();
+                Cart.updateDisplay();
+                Cart.closeCart();
+                showHome();
+                showNotification('Logged out successfully', 'success');
+            }
+        };
+
+        function handleLogin() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const userType = document.getElementById('userType').value;
+
+            if (!email || !password) {
+                showNotification('Please enter both email and password', 'error');
+                return;
+            }
+
+            // Simple validation
+            if (password.length >= 6) {
+                appState.isLoggedIn = true;
+                appState.userType = userType;
+                appState.currentUser = { email, userType };
+                
+                updateNavigationUI();
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                
+                if (userType === 'admin') {
+                    showAdminDashboard();
+                    showNotification('Welcome Admin!', 'success');
+                } else {
+                    showNotification('Welcome back!', 'success');
+                }
+
+                // Clear form
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+            } else {
+                showNotification('Password must be at least 6 characters', 'error');
+            }
+        }
+
+        function proceedToDetails() {
+            if (appState.cart.length === 0) {
+                showNotification('Your cart is empty!', 'error');
+                return;
+            }
+
+            Cart.closeCart();
+            hideAllSections();
+            document.querySelector('.customer-details').classList.add('show');
+            document.querySelector('.customer-details').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function backToDetails() {
+            hideAllSections();
+            document.querySelector('.customer-details').classList.add('show');
+            document.querySelector('.customer-details').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Customer Details Form
+        document.getElementById('customerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const email = document.getElementById('customerEmail').value.trim();
+            const address = document.getElementById('customerAddress').value.trim();
+
+            if (!name || !phone || !email || !address) {
+                showNotification('Please fill all required fields', 'error');
+                return;
+            }
+
+            // Store customer details
+            appState.currentCustomer = { name, phone, email, address };
+            
+            // Show checkout
+            hideAllSections();
+            document.querySelector('.checkout-section').classList.add('show');
+            updateCheckoutDisplay();
+            document.querySelector('.checkout-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function updateCheckoutDisplay() {
+            const orderItems = document.getElementById('orderItems');
+            const orderTotal = document.getElementById('orderTotal');
+
+            orderItems.innerHTML = appState.cart.map(item => `
+                <div class="order-item">
+                    <div class="d-flex justify-content-between">
+                        <span>${item.name} x ${item.quantity}</span>
+                        <span>Rs. ${(item.price * item.quantity).toLocaleString()}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            orderTotal.textContent = `Rs. ${Cart.getTotal().toLocaleString()}`;
+        }
+
+        function confirmOrder() {
+            const order = {
+                id: Date.now(),
+                customer: appState.currentCustomer,
+                items: [...appState.cart],
+                total: Cart.getTotal(),
+                date: new Date().toLocaleDateString(),
+                status: 'Processing'
+            };
+
+            appState.orders.push(order);
+            
+            showNotification(`Order confirmed! Order ID: #${order.id}`, 'success');
+            
+            // Clear cart and forms
+            appState.cart = [];
+            appState.currentCustomer = null;
+            document.getElementById('customerForm').reset();
+            
+            Cart.updateDisplay();
+            updateCartUI();
+            showHome();
+            
+            // Update admin dashboard if admin is logged in
+            if (appState.userType === 'admin') {
+                updateAdminDashboard();
+            }
+        }
+
+        // Admin Dashboard
+        function showAdminDashboard() {
+            hideAllSections();
+            document.querySelector('.main-content').style.display = 'none';
+            document.querySelector('.dashboard').classList.add('show');
+            document.body.classList.add('dashboard-mode');
+            updateAdminDashboard();
+        }
+
+        function updateAdminDashboard() {
+            document.getElementById('totalOrders').textContent = appState.orders.length;
+            document.getElementById('totalCustomers').textContent = new Set(appState.orders.map(o => o.customer?.email)).size;
+            const totalRevenue = appState.orders.reduce((sum, order) => sum + order.total, 0);
+            document.getElementById('totalRevenue').textContent = `Rs. ${totalRevenue.toLocaleString()}`;
+
+            const ordersTable = document.getElementById('ordersTable');
+            if (appState.orders.length === 0) {
+                ordersTable.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No orders yet</td></tr>';
+            } else {
+                ordersTable.innerHTML = appState.orders.map(order => `
+                    <tr>
+                        <td>#${order.id}</td>
+                        <td>${order.customer?.name || 'N/A'}</td>
+                        <td>${order.items.length} items</td>
+                        <td>Rs. ${order.total.toLocaleString()}</td>
+                        <td>${order.date}</td>
+                        <td><span class="order-status status-processing">${order.status}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-success" onclick="updateOrderStatus(${order.id}, 'Delivered')">
+                                Mark Delivered
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = appState.orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                updateAdminDashboard();
+                showNotification(`Order #${orderId} marked as ${newStatus}`, 'success');
+            }
+        }
+
+        // Utility Functions
+        function updateCartUI() {
+            const cartCount = appState.cart.reduce((total, item) => total + item.quantity, 0);
+            const cartBadge = document.getElementById('cartBadge');
+            
+            if (cartCount > 0) {
+                cartBadge.textContent = cartCount;
+                cartBadge.classList.remove('d-none');
+            } else {
+                cartBadge.classList.add('d-none');
+            }
+        }
+
+        function updateNavigationUI() {
+            const loginItem = document.getElementById('loginItem');
+            const logoutItem = document.getElementById('logoutItem');
+            
+            if (appState.isLoggedIn) {
+                loginItem.classList.add('d-none');
+                logoutItem.classList.remove('d-none');
+            } else {
+                loginItem.classList.remove('d-none');
+                logoutItem.classList.add('d-none');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
+    </script>
 </body>
 </html>
