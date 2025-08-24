@@ -1,37 +1,70 @@
+// Enhanced product database with categories and images
+const products = [
+    // Vitamins
+    { id: 1, name: "Vitamin C 1000mg", price: 650, description: "Immune system support tablets - 30 tablets", stock: 45, category: "vitamins", icon: "fas fa-lemon" },
+    { id: 2, name: "Vitamin D3 2000 IU", price: 890, description: "Bone health and immunity support - 60 capsules", stock: 35, category: "vitamins", icon: "fas fa-sun" },
+    { id: 3, name: "Vitamin B Complex", price: 780, description: "Energy metabolism support - 30 tablets", stock: 38, category: "vitamins", icon: "fas fa-bolt" },
+    { id: 4, name: "Vitamin E 400 IU", price: 720, description: "Antioxidant protection - 30 soft gels", stock: 28, category: "vitamins", icon: "fas fa-seedling" },
+    
+    // Supplements
+    { id: 5, name: "Omega 3 Fish Oil", price: 1250, description: "High-quality omega-3 supplement - 60 capsules", stock: 50, category: "supplements", icon: "fas fa-fish" },
+    { id: 6, name: "Calcium + Vitamin D", price: 890, description: "Essential calcium and vitamin D supplement - 60 tablets", stock: 30, category: "supplements", icon: "fas fa-bone" },
+    { id: 7, name: "Multivitamin Complex", price: 1480, description: "Complete daily nutrition supplement - 30 tablets", stock: 25, category: "supplements", icon: "fas fa-pills" },
+    { id: 8, name: "Iron + Folic Acid", price: 720, description: "For anemia prevention and treatment - 30 tablets", stock: 35, category: "supplements", icon: "fas fa-heart" },
+    { id: 9, name: "Magnesium Tablets", price: 580, description: "Muscle and nerve function support - 60 tablets", stock: 40, category: "supplements", icon: "fas fa-dumbbell" },
+    { id: 10, name: "Probiotics Capsules", price: 1650, description: "Digestive health support - 30 capsules", stock: 20, category: "supplements", icon: "fas fa-seedling" },
+    { id: 11, name: "Zinc Sulfate Tablets", price: 450, description: "Immune system and wound healing - 30 tablets", stock: 55, category: "supplements", icon: "fas fa-shield-alt" },
+    { id: 12, name: "Glucosamine Chondroitin", price: 1890, description: "Joint health and mobility support - 60 capsules", stock: 15, category: "supplements", icon: "fas fa-running" },
+    
+    // Medicines
+    { id: 13, name: "Paracetamol 500mg", price: 120, description: "Pain relief and fever reducer - 10 tablets", stock: 100, category: "medicines", icon: "fas fa-thermometer-half" },
+    { id: 14, name: "Ibuprofen 400mg", price: 180, description: "Anti-inflammatory pain relief - 10 tablets", stock: 85, category: "medicines", icon: "fas fa-medkit" },
+    { id: 15, name: "Antacid Tablets", price: 250, description: "Heartburn and acid indigestion relief - 20 tablets", stock: 70, category: "medicines", icon: "fas fa-stomach" },
+    { id: 16, name: "Cough Syrup", price: 320, description: "Dry cough relief - 100ml bottle", stock: 45, category: "medicines", icon: "fas fa-lungs" },
+    { id: 17, name: "Allergy Relief Tablets", price: 450, description: "Antihistamine for allergies - 10 tablets", stock: 60, category: "medicines", icon: "fas fa-leaf" },
+    
+    // Skincare
+    { id: 18, name: "Sunscreen SPF 50", price: 890, description: "Broad spectrum UV protection - 75ml", stock: 40, category: "skincare", icon: "fas fa-sun" },
+    { id: 19, name: "Moisturizing Cream", price: 650, description: "Daily hydrating cream - 100ml", stock: 35, category: "skincare", icon: "fas fa-tint" },
+    { id: 20, name: "Anti-Acne Gel", price: 780, description: "Acne treatment gel - 30g", stock: 25, category: "skincare", icon: "fas fa-spa" },
+    { id: 21, name: "Face Wash", price: 420, description: "Gentle daily cleanser - 150ml", stock: 50, category: "skincare", icon: "fas fa-pump-soap" },
+    
+    // Baby Care
+    { id: 22, name: "Baby Lotion", price: 580, description: "Gentle moisturizing lotion - 200ml", stock: 30, category: "baby", icon: "fas fa-baby" },
+    { id: 23, name: "Baby Shampoo", price: 450, description: "Tear-free gentle shampoo - 200ml", stock: 35, category: "baby", icon: "fas fa-shower" },
+    { id: 24, name: "Diaper Rash Cream", price: 680, description: "Protective barrier cream - 100g", stock: 25, category: "baby", icon: "fas fa-heart" },
+    { id: 25, name: "Baby Powder", price: 320, description: "Gentle talc-free powder - 200g", stock: 40, category: "baby", icon: "fas fa-feather-alt" }
+];
+
+// Application State
 const AppState = {
     isLoggedIn: false,
     userType: null,
     currentUser: null,
     cart: [],
-    orders: []
+    orders: [],
+    filteredProducts: products,
+    currentCategory: 'all'
 };
-
-// Product database
-const products = [
-    { id: 1, name: "Omega 3 Fish Oil", price: 1250, description: "High-quality omega-3 supplement", stock: 50 },
-    { id: 2, name: "Calcium + Vitamin D Tablets", price: 890, description: "Essential calcium and vitamin D supplement", stock: 30 },
-    { id: 3, name: "Vitamin C 1000mg", price: 650, description: "Immune system support tablets", stock: 45 },
-    { id: 4, name: "Multivitamin Complex", price: 1480, description: "Complete daily nutrition supplement", stock: 25 },
-    { id: 5, name: "Iron + Folic Acid", price: 720, description: "For anemia prevention and treatment", stock: 35 },
-    { id: 6, name: "Magnesium Tablets", price: 580, description: "Muscle and nerve function support", stock: 40 },
-    { id: 7, name: "Probiotics Capsules", price: 1650, description: "Digestive health support", stock: 20 },
-    { id: 8, name: "Zinc Sulfate Tablets", price: 450, description: "Immune system and wound healing", stock: 55 },
-    { id: 9, name: "Vitamin B Complex", price: 780, description: "Energy metabolism support", stock: 38 },
-    { id: 10, name: "Glucosamine Chondroitin", price: 1890, description: "Joint health and mobility support", stock: 15 }
-];
 
 // DOM Elements
 const elements = {
     loginBtn: document.getElementById('loginBtn'),
     logoutBtn: document.getElementById('logoutBtn'),
     logoutItem: document.getElementById('logoutItem'),
-    loginModal: new bootstrap.Modal(document.getElementById('loginModal')),
-    dashboard: document.getElementById('dashboard'),
-    hero: document.querySelector('.hero'),
-    services: document.getElementById('services'),
-    features: document.getElementById('features'),
-    contact: document.getElementById('contact'),
-    notification: document.getElementById('notification')
+    cartBtn: document.getElementById('cartBtn'),
+    cartBadge: document.getElementById('cartBadge'),
+    cartSidebar: document.getElementById('cartSidebar'),
+    cartOverlay: document.getElementById('cartOverlay'),
+    closeCartBtn: document.getElementById('closeCartBtn'),
+    productsGrid: document.getElementById('productsGrid'),
+    searchInput: document.getElementById('searchInput'),
+    searchBtn: document.getElementById('searchBtn'),
+    checkoutBtn: document.getElementById('checkoutBtn'),
+    cartItems: document.getElementById('cartItems'),
+    cartTotal: document.getElementById('cartTotal'),
+    notification: document.getElementById('notification'),
+    loginModal: null
 };
 
 // Utility Functions
@@ -47,19 +80,20 @@ const Utils = {
         }, 3000);
     },
 
-    toggleSections: function(showDashboard = false) {
-        if (showDashboard) {
-            elements.dashboard.style.display = 'block';
-            elements.hero.style.display = 'none';
-            elements.services.style.display = 'none';
-            elements.features.style.display = 'none';
-            elements.contact.style.display = 'none';
+    formatPrice: function(price) {
+        return `Rs. ${price.toLocaleString()}`;
+    },
+
+    updateCartUI: function() {
+        const cartCount = AppState.cart.reduce((total, item) => total + item.quantity, 0);
+        
+        if (cartCount > 0) {
+            elements.cartBadge.textContent = cartCount;
+            elements.cartBadge.classList.remove('d-none');
+            elements.checkoutBtn.disabled = !AppState.isLoggedIn;
         } else {
-            elements.dashboard.style.display = 'none';
-            elements.hero.style.display = 'block';
-            elements.services.style.display = 'block';
-            elements.features.style.display = 'block';
-            elements.contact.style.display = 'block';
+            elements.cartBadge.classList.add('d-none');
+            elements.checkoutBtn.disabled = true;
         }
     },
 
@@ -67,40 +101,314 @@ const Utils = {
         if (AppState.isLoggedIn) {
             elements.loginBtn.parentElement.classList.add('d-none');
             elements.logoutItem.classList.remove('d-none');
+            elements.checkoutBtn.disabled = AppState.cart.length === 0;
         } else {
             elements.loginBtn.parentElement.classList.remove('d-none');
             elements.logoutItem.classList.add('d-none');
+            elements.checkoutBtn.disabled = true;
         }
     },
 
-    formatPrice: function(price) {
-        return `Rs. ${price.toLocaleString()}`;
+    scrollToSection: function(sectionId) {
+        const section = document.querySelector(sectionId);
+        if (section) {
+            section.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
     }
 };
 
-// Authentication Module
+// Product Display Functions
+const ProductDisplay = {
+    renderProducts: function(productsToRender = AppState.filteredProducts) {
+        const grid = elements.productsGrid;
+        
+        if (productsToRender.length === 0) {
+            grid.innerHTML = `
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-search"></i> No products found matching your criteria.
+                        <button class="btn btn-link" onclick="ProductDisplay.clearFilters()">Clear filters</button>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = productsToRender.map(product => `
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4" data-category="${product.category}">
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="${product.icon}"></i>
+                    </div>
+                    <div class="product-body">
+                        <h5 class="product-title">${product.name}</h5>
+                        <p class="text-muted small">${product.description}</p>
+                        <div class="product-price">${Utils.formatPrice(product.price)}</div>
+                        <div class="product-stock ${product.stock < 10 ? 'text-warning' : 'text-muted'}">
+                            ${product.stock === 0 ? 'Out of Stock' : `Stock: ${product.stock} available`}
+                            ${product.stock < 10 && product.stock > 0 ? ' (Low Stock!)' : ''}
+                        </div>
+                        <button class="add-to-cart-btn" onclick="Cart.add(${product.id})" ${product.stock === 0 ? 'disabled' : ''}>
+                            <i class="fas fa-cart-plus"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        // Add animation to product cards
+        const cards = grid.querySelectorAll('.product-card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.animation = 'fadeInUp 0.5s ease-out forwards';
+            }, index * 100);
+        });
+    },
+
+    filterByCategory: function(category) {
+        AppState.currentCategory = category;
+        
+        // Update filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-category="${category}"]`).classList.add('active');
+        
+        // Filter products
+        if (category === 'all') {
+            AppState.filteredProducts = products;
+        } else {
+            AppState.filteredProducts = products.filter(product => product.category === category);
+        }
+        
+        this.renderProducts();
+        Utils.showNotification(`Showing ${AppState.filteredProducts.length} products in ${category === 'all' ? 'all categories' : category}`, 'success');
+    },
+
+    searchProducts: function() {
+        const query = elements.searchInput.value.toLowerCase().trim();
+        
+        if (query === '') {
+            AppState.filteredProducts = AppState.currentCategory === 'all' ? 
+                products : 
+                products.filter(p => p.category === AppState.currentCategory);
+        } else {
+            let searchBase = AppState.currentCategory === 'all' ? 
+                products : 
+                products.filter(p => p.category === AppState.currentCategory);
+                
+            AppState.filteredProducts = searchBase.filter(product =>
+                product.name.toLowerCase().includes(query) ||
+                product.description.toLowerCase().includes(query) ||
+                product.category.toLowerCase().includes(query)
+            );
+        }
+        
+        this.renderProducts();
+        
+        if (query) {
+            Utils.showNotification(`Found ${AppState.filteredProducts.length} products for "${query}"`, 'success');
+        } else {
+            Utils.showNotification(`Showing ${AppState.filteredProducts.length} products`, 'success');
+        }
+    },
+
+    clearFilters: function() {
+        elements.searchInput.value = '';
+        this.filterByCategory('all');
+    }
+};
+
+// Shopping Cart Functions
+const Cart = {
+    add: function(productId) {
+        const product = products.find(p => p.id === productId);
+        if (!product || product.stock === 0) {
+            Utils.showNotification('Product not available!', 'error');
+            return;
+        }
+
+        const existingItem = AppState.cart.find(item => item.id === productId);
+        if (existingItem) {
+            if (existingItem.quantity < product.stock) {
+                existingItem.quantity += 1;
+                Utils.showNotification(`${product.name} quantity updated! (${existingItem.quantity})`, 'success');
+            } else {
+                Utils.showNotification('Maximum stock reached!', 'error');
+                return;
+            }
+        } else {
+            AppState.cart.push({ ...product, quantity: 1 });
+            Utils.showNotification(`${product.name} added to cart!`, 'success');
+        }
+
+        this.updateDisplay();
+        Utils.updateCartUI();
+
+        // Animate cart button
+        elements.cartBtn.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            elements.cartBtn.style.transform = 'scale(1)';
+        }, 200);
+    },
+
+    remove: function(productId) {
+        const product = products.find(p => p.id === productId);
+        AppState.cart = AppState.cart.filter(item => item.id !== productId);
+        this.updateDisplay();
+        Utils.updateCartUI();
+        Utils.showNotification(`${product.name} removed from cart`, 'success');
+    },
+
+    updateQuantity: function(productId, newQuantity) {
+        const item = AppState.cart.find(item => item.id === productId);
+        const product = products.find(p => p.id === productId);
+        
+        if (!item || !product) return;
+        
+        if (newQuantity <= 0) {
+            this.remove(productId);
+            return;
+        }
+        
+        if (newQuantity <= product.stock) {
+            item.quantity = newQuantity;
+            this.updateDisplay();
+            Utils.updateCartUI();
+            Utils.showNotification(`${product.name} quantity updated`, 'success');
+        } else {
+            Utils.showNotification('Maximum stock reached!', 'error');
+        }
+    },
+
+    getTotal: function() {
+        return AppState.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    },
+
+    getItemCount: function() {
+        return AppState.cart.reduce((total, item) => total + item.quantity, 0);
+    },
+
+    updateDisplay: function() {
+        const cartItems = elements.cartItems;
+        const cartTotal = elements.cartTotal;
+
+        if (AppState.cart.length === 0) {
+            cartItems.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Your cart is empty</p>
+                    <button class="btn btn-primary-custom btn-sm" onclick="Cart.closeCart(); Utils.scrollToSection('#products')">
+                        <i class="fas fa-shopping-bag"></i> Start Shopping
+                    </button>
+                </div>
+            `;
+            cartTotal.textContent = Utils.formatPrice(0);
+            return;
+        }
+
+        cartItems.innerHTML = AppState.cart.map(item => `
+            <div class="cart-item">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${item.name}</h6>
+                        <small class="text-muted">${Utils.formatPrice(item.price)} each</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger" onclick="Cart.remove(${item.id})" title="Remove item">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                        <span class="btn btn-outline-secondary" style="min-width: 45px;">${item.quantity}</span>
+                        <button type="button" class="btn btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                    </div>
+                    <strong class="text-success">${Utils.formatPrice(item.price * item.quantity)}</strong>
+                </div>
+                ${item.quantity >= item.stock ? '<small class="text-warning">Maximum quantity reached</small>' : ''}
+            </div>
+        `).join('');
+
+        cartTotal.textContent = Utils.formatPrice(this.getTotal());
+    },
+
+    checkout: function() {
+        if (!AppState.isLoggedIn) {
+            elements.loginModal.show();
+            Utils.showNotification('Please login to complete your purchase', 'error');
+            return;
+        }
+
+        if (AppState.cart.length === 0) {
+            Utils.showNotification('Your cart is empty!', 'error');
+            return;
+        }
+
+        // Show processing state
+        elements.checkoutBtn.disabled = true;
+        elements.checkoutBtn.innerHTML = '<span class="spinner"></span>Processing...';
+        
+        // Simulate checkout process
+        setTimeout(() => {
+            const order = {
+                id: Date.now(),
+                items: [...AppState.cart],
+                total: this.getTotal(),
+                date: new Date().toLocaleDateString(),
+                status: 'Processing'
+            };
+            
+            AppState.orders.push(order);
+            
+            Utils.showNotification(`Order placed successfully! Order ID: #${order.id}. Total: ${Utils.formatPrice(this.getTotal())}`, 'success');
+            
+            // Clear cart and reset UI
+            AppState.cart = [];
+            this.updateDisplay();
+            Utils.updateCartUI();
+            this.closeCart();
+            
+            // Reset checkout button
+            elements.checkoutBtn.innerHTML = '<i class="fas fa-credit-card"></i> Proceed to Checkout';
+            elements.checkoutBtn.disabled = true;
+        }, 2000);
+    },
+
+    openCart: function() {
+        elements.cartSidebar.classList.add('open');
+        elements.cartOverlay.classList.add('show');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        this.updateDisplay();
+    },
+
+    closeCart: function() {
+        elements.cartSidebar.classList.remove('open');
+        elements.cartOverlay.classList.remove('show');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+};
+
+// Authentication Functions
 const Auth = {
     login: function(email, password, userType) {
         return new Promise((resolve) => {
             setTimeout(() => {
-                if (email && password) {
+                // Simple validation - in real app, this would be server-side
+                if (email && password.length >= 6) {
                     AppState.isLoggedIn = true;
                     AppState.userType = userType;
                     AppState.currentUser = { email, userType };
                     
                     Utils.updateNavigationUI();
-                    Utils.toggleSections(true);
+                    Utils.showNotification(`Welcome back${userType === 'staff' ? ' (Staff)' : ''}!`, 'success');
                     
-                    if (userType === 'customer') {
-                        Dashboard.renderCustomerDashboard();
-                    } else {
-                        Dashboard.renderStaffDashboard();
-                    }
-                    
-                    Utils.showNotification(`Welcome back! Logged in as ${userType}.`, 'success');
                     resolve({ success: true });
                 } else {
-                    Utils.showNotification('Please enter valid credentials.', 'error');
+                    Utils.showNotification('Please enter valid credentials (password must be at least 6 characters).', 'error');
                     resolve({ success: false });
                 }
             }, 1000);
@@ -111,414 +419,106 @@ const Auth = {
         AppState.isLoggedIn = false;
         AppState.userType = null;
         AppState.currentUser = null;
+        
+        // Clear sensitive data
         AppState.cart = [];
+        Cart.updateDisplay();
+        Cart.closeCart();
         
         Utils.updateNavigationUI();
-        Utils.toggleSections(false);
+        Utils.updateCartUI();
         Utils.showNotification('You have been logged out successfully.', 'success');
+    },
+
+    register: function() {
+        // Placeholder for registration functionality
+        Utils.showNotification('Registration feature coming soon! For now, you can login with any email and password (6+ characters).', 'success');
     }
 };
 
-// Shopping Cart Module
-const Cart = {
-    add: function(productId) {
-        const product = products.find(p => p.id === productId);
-        if (!product) return;
-        
-        const existingItem = AppState.cart.find(item => item.id === productId);
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            AppState.cart.push({ ...product, quantity: 1 });
-        }
-        
-        this.updateCartDisplay();
-        Utils.showNotification(`${product.name} added to cart!`, 'success');
-    },
-
-    remove: function(productId) {
-        AppState.cart = AppState.cart.filter(item => item.id !== productId);
-        this.updateCartDisplay();
-        Utils.showNotification('Item removed from cart', 'success');
-    },
-
-    updateQuantity: function(productId, quantity) {
-        const item = AppState.cart.find(item => item.id === productId);
-        if (item) {
-            item.quantity = Math.max(1, quantity);
-            this.updateCartDisplay();
-        }
-    },
-
-    getTotal: function() {
-        return AppState.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    },
-
-    updateCartDisplay: function() {
-        const cartContainer = document.getElementById('cartItems');
-        const cartTotal = document.getElementById('cartTotal');
-        
-        if (!cartContainer) return;
-        
-        if (AppState.cart.length === 0) {
-            cartContainer.innerHTML = '<p class="text-muted">Your cart is empty</p>';
-            cartTotal.textContent = Utils.formatPrice(0);
-            return;
-        }
-        
-        cartContainer.innerHTML = AppState.cart.map(item => `
-            <div class="cart-item d-flex justify-content-between align-items-center mb-3 p-3 border rounded">
-                <div>
-                    <h6>${item.name}</h6>
-                    <small class="text-muted">${Utils.formatPrice(item.price)} each</small>
-                </div>
-                <div class="d-flex align-items-center">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
-                    <span class="mx-2">${item.quantity}</span>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
-                    <button class="btn btn-sm btn-danger ms-2" onclick="Cart.remove(${item.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        `).join('');
-        
-        cartTotal.textContent = Utils.formatPrice(this.getTotal());
-    },
-
-    checkout: function() {
-        if (AppState.cart.length === 0) {
-            Utils.showNotification('Your cart is empty!', 'error');
-            return;
-        }
-        
-        const order = {
-            id: Date.now(),
-            items: [...AppState.cart],
-            total: this.getTotal(),
-            date: new Date().toLocaleDateString(),
-            status: 'Processing'
-        };
-        
-        AppState.orders.push(order);
-        AppState.cart = [];
-        
-        this.updateCartDisplay();
-        Dashboard.showShippingInfo(order);
-        Utils.showNotification('Order placed successfully!', 'success');
-    }
-};
-
-// Dashboard Module
-const Dashboard = {
-    renderCustomerDashboard: function() {
-        const dashboardContainer = document.querySelector('.dashboard .container');
-        dashboardContainer.innerHTML = `
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="dashboard-card">
-                        <h3><i class="fas fa-search"></i> Search Products</h3>
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Search medications..." id="searchInput">
-                            <button class="btn btn-dashboard" id="searchBtn">
-                                <i class="fas fa-search"></i> Search
-                            </button>
-                        </div>
-                        <div id="searchResults">
-                            ${this.renderProductGrid()}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="dashboard-card">
-                        <h3><i class="fas fa-shopping-cart"></i> Shopping Cart</h3>
-                        <div id="cartItems">
-                            <p class="text-muted">Your cart is empty</p>
-                        </div>
-                        <hr>
-                        <div class="d-flex justify-content-between">
-                            <strong>Total: <span id="cartTotal">${Utils.formatPrice(0)}</span></strong>
-                        </div>
-                        <button class="btn btn-primary w-100 mt-3" onclick="Cart.checkout()">
-                            <i class="fas fa-credit-card"></i> Checkout
-                        </button>
-                    </div>
-                    
-                    <div class="dashboard-card">
-                        <h3><i class="fas fa-cog"></i> Account Settings</h3>
-                        <button class="btn btn-dashboard mb-2 w-100" onclick="Dashboard.updateStatus()">
-                            <i class="fas fa-user-edit"></i> Update Status
-                        </button>
-                        <button class="btn btn-dashboard w-100" onclick="Dashboard.recoverPassword()">
-                            <i class="fas fa-key"></i> Change Password
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="shippingModal" class="modal fade" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Shipping Information</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body" id="shippingContent">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
+// Initialize Application
+const App = {
+    init: function() {
+        this.initializeElements();
         this.attachEventListeners();
+        this.loadInitialData();
+        this.setupKeyboardShortcuts();
     },
 
-    renderStaffDashboard: function() {
-        const dashboardContainer = document.querySelector('.dashboard .container');
-        dashboardContainer.innerHTML = `
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="dashboard-card">
-                        <h3><i class="fas fa-pills"></i> Prescription Management</h3>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button class="btn btn-dashboard mb-2" onclick="Dashboard.uploadPrescription()">
-                                    <i class="fas fa-upload"></i> Upload Prescription
-                                </button>
-                            </div>
-                            <div class="col-md-6">
-                                <button class="btn btn-dashboard mb-2" onclick="Dashboard.requestRefill()">
-                                    <i class="fas fa-redo"></i> Request Refill
-                                </button>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-dashboard" onclick="Dashboard.viewHistory()">
-                                <i class="fas fa-history"></i> View Order History
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="dashboard-card">
-                        <h3><i class="fas fa-truck"></i> Delivery Management</h3>
-                        <button class="btn btn-dashboard" onclick="Dashboard.scheduleDelivery()">
-                            <i class="fas fa-calendar-alt"></i> Schedule Delivery
-                        </button>
-                    </div>
-                    
-                    <div class="dashboard-card">
-                        <h3><i class="fas fa-user-tie"></i> Staff Functions</h3>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button class="btn btn-dashboard mb-2" onclick="Dashboard.sendNotifications()">
-                                    <i class="fas fa-bell"></i> Send Notifications
-                                </button>
-                            </div>
-                            <div class="col-md-6">
-                                <button class="btn btn-dashboard mb-2" onclick="Dashboard.manageInventory()">
-                                    <i class="fas fa-boxes"></i> Manage Inventory
-                                </button>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-dashboard" onclick="Dashboard.viewRefillRequests()">
-                                <i class="fas fa-list"></i> View Refill Requests
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="dashboard-card">
-                        <h3><i class="fas fa-bell"></i> Notifications</h3>
-                        <div id="notificationsList">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> Prescription refill available for Medication A
-                            </div>
-                            <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle"></i> Delivery scheduled for tomorrow
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="dashboard-card">
-                        <h3><i class="fas fa-cog"></i> Account Settings</h3>
-                        <button class="btn btn-dashboard mb-2" onclick="Dashboard.updateStatus()">
-                            <i class="fas fa-user-edit"></i> Update Status
-                        </button>
-                        <button class="btn btn-dashboard" onclick="Dashboard.recoverPassword()">
-                            <i class="fas fa-key"></i> Change Password
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    },
-
-    renderProductGrid: function(filteredProducts = products) {
-        return `
-            <div class="row">
-                ${filteredProducts.map(product => `
-                    <div class="col-md-6 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">${product.name}</h5>
-                                <p class="card-text">${product.description}</p>
-                                <p class="card-text"><strong>${Utils.formatPrice(product.price)}</strong></p>
-                                <p class="card-text"><small class="text-muted">Stock: ${product.stock}</small></p>
-                                <button class="btn btn-primary btn-sm" onclick="Cart.add(${product.id})">
-                                    <i class="fas fa-cart-plus"></i> Add to Cart
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
+    initializeElements: function() {
+        // Initialize Bootstrap modal
+        elements.loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
     },
 
     attachEventListeners: function() {
-        const searchBtn = document.getElementById('searchBtn');
-        const searchInput = document.getElementById('searchInput');
-        
-        if (searchBtn) {
-            searchBtn.addEventListener('click', this.searchProducts);
-        }
-        
-        if (searchInput) {
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    this.searchProducts();
+        // Authentication
+        elements.loginBtn.addEventListener('click', () => elements.loginModal.show());
+        elements.logoutBtn.addEventListener('click', () => Auth.logout());
+
+        // Cart functionality
+        elements.cartBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            Cart.openCart();
+        });
+        elements.closeCartBtn.addEventListener('click', Cart.closeCart);
+        elements.cartOverlay.addEventListener('click', Cart.closeCart);
+        elements.checkoutBtn.addEventListener('click', Cart.checkout);
+
+        // Search functionality
+        elements.searchBtn.addEventListener('click', ProductDisplay.searchProducts);
+        elements.searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                ProductDisplay.searchProducts();
+            }
+        });
+
+        // Real-time search as user types (debounced)
+        let searchTimeout;
+        elements.searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(ProductDisplay.searchProducts, 500);
+        });
+
+        // Category filters
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                ProductDisplay.filterByCategory(category);
+            });
+        });
+
+        // Login form
+        document.getElementById('loginSubmitBtn').addEventListener('click', this.handleLogin);
+        document.getElementById('registerBtn').addEventListener('click', Auth.register);
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.handleLogin();
+            }
+        });
+
+        // Smooth scrolling navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && !href.includes('cartBtn')) {
+                    e.preventDefault();
+                    Utils.scrollToSection(href);
                 }
             });
-        }
+        });
     },
 
-    searchProducts: function() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        const filteredProducts = products.filter(product => 
-            product.name.toLowerCase().includes(query) || 
-            product.description.toLowerCase().includes(query)
-        );
-        
-        document.getElementById('searchResults').innerHTML = Dashboard.renderProductGrid(filteredProducts);
-        Utils.showNotification(`Found ${filteredProducts.length} products`, 'success');
-    },
-
-    showShippingInfo: function(order) {
-        const shippingModal = new bootstrap.Modal(document.getElementById('shippingModal'));
-        const shippingContent = document.getElementById('shippingContent');
-        
-        shippingContent.innerHTML = `
-            <div class="text-center">
-                <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
-                <h4 class="mt-3">Order Confirmed!</h4>
-                <p class="text-muted">Order ID: #${order.id}</p>
-            </div>
-            
-            <div class="mt-4">
-                <h5>Order Summary:</h5>
-                <div class="border rounded p-3">
-                    ${order.items.map(item => `
-                        <div class="d-flex justify-content-between">
-                            <span>${item.name} x${item.quantity}</span>
-                            <span>${Utils.formatPrice(item.price * item.quantity)}</span>
-                        </div>
-                    `).join('')}
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <strong>Total: ${Utils.formatPrice(order.total)}</strong>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mt-4">
-                <h5>Shipping Information:</h5>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Your order will be delivered within 2-3 business days.
-                </div>
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-truck"></i> Standard Delivery</li>
-                    <li><i class="fas fa-map-marker-alt"></i> Delivery Address: 28/1 BELLANTHARA ROAD, NEDIMALA, DEHIWALA</li>
-                    <li><i class="fas fa-phone"></i> Contact: +94 77 412 2776</li>
-                </ul>
-            </div>
-            
-            <div class="mt-4">
-                <h5>Tracking Information:</h5>
-                <div class="progress mb-2">
-                    <div class="progress-bar" role="progressbar" style="width: 25%"></div>
-                </div>
-                <small class="text-muted">Status: Order Processing</small>
-            </div>
-        `;
-        
-        shippingModal.show();
-    },
-
-    // Staff functions
-    uploadPrescription: function() {
-        Utils.showNotification('Prescription upload feature activated!', 'success');
-    },
-
-    requestRefill: function() {
-        Utils.showNotification('Refill request submitted!', 'success');
-    },
-
-    viewHistory: function() {
-        Utils.showNotification('Loading order history...', 'success');
-    },
-
-    scheduleDelivery: function() {
-        Utils.showNotification('Delivery scheduling interface opened!', 'success');
-    },
-
-    sendNotifications: function() {
-        Utils.showNotification('Notifications sent to all customers!', 'success');
-    },
-
-    manageInventory: function() {
-        Utils.showNotification('Inventory management system opened!', 'success');
-    },
-
-    viewRefillRequests: function() {
-        Utils.showNotification('Viewing all refill requests...', 'success');
-    },
-
-    updateStatus: function() {
-        Utils.showNotification('Status update interface opened!', 'success');
-    },
-
-    recoverPassword: function() {
-        Utils.showNotification('Password recovery email sent!', 'success');
-    }
-};
-
-// Event Listeners
-document.addEventListener('DOMContentLoaded', function() {
-    // Login button click
-    elements.loginBtn.addEventListener('click', function() {
-        elements.loginModal.show();
-    });
-
-    // Logout button click
-    elements.logoutBtn.addEventListener('click', function() {
-        Auth.logout();
-    });
-
-    // Login form submission
-    document.getElementById('loginSubmitBtn').addEventListener('click', async function() {
-        const email = document.getElementById('email').value;
+    handleLogin: async function() {
+        const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         const userType = document.getElementById('userType').value;
 
         if (!email || !password) {
-            Utils.showNotification('Please enter valid credentials.', 'error');
+            Utils.showNotification('Please enter both email and password.', 'error');
             return;
         }
 
-        const button = this;
+        const button = document.getElementById('loginSubmitBtn');
         const originalText = button.innerHTML;
         button.innerHTML = '<span class="spinner"></span>Logging in...';
         button.disabled = true;
@@ -533,105 +533,107 @@ document.addEventListener('DOMContentLoaded', function() {
 
         button.innerHTML = originalText;
         button.disabled = false;
-    });
+    },
 
-    // Register button click
-    document.getElementById('registerBtn').addEventListener('click', function() {
-        Utils.showNotification('Registration form would open here!', 'success');
-    });
+    loadInitialData: function() {
+        // Initial setup
+        ProductDisplay.renderProducts();
+        Utils.updateNavigationUI();
+        Utils.updateCartUI();
+        Cart.updateDisplay();
 
-    // Get Started button
-    document.getElementById('getStartedBtn').addEventListener('click', function() {
-        elements.loginModal.show();
-    });
+        // Add some sample notification for demo
+        setTimeout(() => {
+            Utils.showNotification('Welcome to Kingsway Healthcare! Browse our quality products.', 'success');
+        }, 1000);
+    },
 
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+    setupKeyboardShortcuts: function() {
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+L to open login
+            if (e.ctrlKey && e.key === 'l') {
+                e.preventDefault();
+                if (!AppState.isLoggedIn) {
+                    elements.loginModal.show();
+                }
+            }
+            
+            // Escape to close modals/cart
+            if (e.key === 'Escape') {
+                elements.loginModal.hide();
+                Cart.closeCart();
+            }
+
+            // Ctrl+K to focus search
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                elements.searchInput.focus();
             }
         });
-    });
-
-    // Added animation on scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-fade-in');
-            }
-        });
-    }, observerOptions);
-
-    document.querySelectorAll('.service-card, .feature-item').forEach(el => {
-        observer.observe(el);
-    });
-
-    // Initialize navigation
-    Utils.updateNavigationUI();
-
-    // Added Enter key support for login form
-    document.getElementById('password').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            document.getElementById('loginSubmitBtn').click();
-        }
-    });
-
-    // Added typing effect to hero title
-    const heroTitle = document.querySelector('.hero h1');
-    if (heroTitle) {
-        const originalText = heroTitle.textContent;
-        heroTitle.textContent = '';
-        
-        let i = 0;
-        const typeWriter = function() {
-            if (i < originalText.length) {
-                heroTitle.textContent += originalText.charAt(i);
-                i++;
-                setTimeout(typeWriter, 100);
-            }
-        };
-        
-        setTimeout(typeWriter, 500);
     }
-});
-
-// keyboard shortcuts
-document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.key === 'l') {
-        e.preventDefault();
-        if (!AppState.isLoggedIn) {
-            elements.loginModal.show();
-        }
-    }
-    
-    if (e.key === 'Escape') {
-        elements.loginModal.hide();
-    }
-});
-
-// Form validation
-const validateForm = function(email, password) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-    if (!email || !emailRegex.test(email)) {
-        Utils.showNotification('Please enter a valid email address.', 'error');
-        return false;
-    }
-    
-    if (!password || password.length < 6) {
-        Utils.showNotification('Password must be at least 6 characters long.', 'error');
-        return false;
-    }
-    return true;
 };
+
+// Form Validation
+const Validation = {
+    validateEmail: function(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    },
+
+    validatePassword: function(password) {
+        return password && password.length >= 6;
+    },
+
+    showFieldError: function(fieldId, message) {
+        const field = document.getElementById(fieldId);
+        field.classList.add('is-invalid');
+        
+        // Remove existing error message
+        const existingError = field.parentNode.querySelector('.invalid-feedback');
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        // Add new error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'invalid-feedback';
+        errorDiv.textContent = message;
+        field.parentNode.appendChild(errorDiv);
+    },
+
+    clearFieldError: function(fieldId) {
+        const field = document.getElementById(fieldId);
+        field.classList.remove('is-invalid');
+        
+        const errorMessage = field.parentNode.querySelector('.invalid-feedback');
+        if (errorMessage) {
+            errorMessage.remove();
+        }
+    }
+};
+
+// Initialize application when DOM is ready
+document.addEventListener('DOMContentLoaded', App.init);
+
+// Handle page visibility change (pause/resume functionality)
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        // Refresh data when page becomes visible again
+        ProductDisplay.renderProducts();
+    }
+});
+
+// Handle online/offline status
+window.addEventListener('online', () => {
+    Utils.showNotification('Connection restored!', 'success');
+});
+
+window.addEventListener('offline', () => {
+    Utils.showNotification('No internet connection. Some features may not work.', 'error');
+});
+
+// Export functions for global access (if needed)
+window.Cart = Cart;
+window.Auth = Auth;
+window.ProductDisplay = ProductDisplay;
+window.Utils = Utils;
