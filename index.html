@@ -273,38 +273,6 @@
             transform: scale(1.05);
         }
 
-        /* Services Section */
-        .services {
-            padding: 80px 0;
-            background: white;
-        }
-
-        .service-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            height: 100%;
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-        }
-
-        .service-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .service-card h3 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
         /* Customer Details Section */
         .customer-details {
             padding: 80px 0;
@@ -321,34 +289,126 @@
             padding: 3rem;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
-        /* Checkout Section */
-        .checkout-section {
+        /* Order Confirmation Section */
+        .order-confirmation {
             padding: 80px 0;
             background: white;
             display: none;
         }
 
-        .checkout-section.show {
+        .order-confirmation.show {
             display: block;
         }
 
-        .order-summary {
+        .confirmation-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .delivery-timeline {
+            margin: 2rem 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 1rem;
             background: var(--light-gray);
-            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .timeline-icon {
+            font-size: 1.5rem;
+            color: var(--success-color);
+            margin-right: 1rem;
+            width: 40px;
+        }
+
+        .timeline-item.pending .timeline-icon {
+            color: var(--dark-gray);
+        }
+
+        /* Admin Dashboard */
+        .dashboard {
+            display: none;
+            padding: 40px 0;
+            margin-top: 80px;
+        }
+
+        .dashboard.show {
+            display: block;
+        }
+
+        .dashboard-card {
+            background: white;
             border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-card h3 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
             margin-bottom: 2rem;
         }
 
-        .order-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid #dee2e6;
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-processing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-shipped {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-delivered {
+            background: #d1edff;
+            color: #0c5460;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
         }
 
         /* Cart Sidebar */
@@ -408,49 +468,6 @@
             padding: 1rem;
             border-top: 2px solid var(--primary-color);
             background: var(--light-gray);
-        }
-
-        /* Dashboard Styles */
-        .dashboard {
-            display: none;
-            padding: 40px 0;
-            margin-top: 80px;
-        }
-
-        .dashboard.show {
-            display: block;
-        }
-
-        .dashboard-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .dashboard-card h3 {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--accent-color);
-            padding-bottom: 10px;
-            margin-bottom: 1.5rem;
-        }
-
-        .order-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .status-processing {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-delivered {
-            background: #d1edff;
-            color: #0c5460;
         }
 
         /* Footer Styles */
@@ -541,6 +558,59 @@
         /* Hide main sections when dashboard is shown */
         .dashboard-mode .main-content {
             display: none;
+        }
+
+        /* Analytics Charts */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 1rem 0;
+        }
+
+        /* Product Management */
+        .inventory-low {
+            background: #fff3cd !important;
+        }
+
+        .inventory-out {
+            background: #f8d7da !important;
+        }
+
+        /* Customer Profile Card */
+        .customer-profile {
+            border-left: 4px solid var(--primary-color);
+            background: #f8f9fa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        /* Order Details Modal */
+        .order-item-detail {
+            border-bottom: 1px solid #eee;
+            padding: 0.5rem 0;
+        }
+
+        /* Progress bars */
+        .progress-custom {
+            height: 8px;
+            border-radius: 10px;
+            background: #e9ecef;
+        }
+
+        .progress-bar-custom {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            transition: width 0.3s ease;
+        }
+
+        /* Action buttons */
+        .action-btn {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            margin: 2px;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -687,7 +757,7 @@
         </section>
 
         <!-- Services Section -->
-        <section class="services" id="services">
+        <section class="services py-5 bg-light" id="services">
             <div class="container">
                 <div class="text-center mb-5">
                     <h2 class="mb-4">Our Services</h2>
@@ -741,21 +811,41 @@
                                 <input type="tel" class="form-control" id="customerPhone" required>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="customerEmail" class="form-label">Email Address *</label>
-                            <input type="email" class="form-control" id="customerEmail" required>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="customerEmail" class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" id="customerEmail" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="customerAge" class="form-label">Age</label>
+                                <input type="number" class="form-control" id="customerAge" min="1" max="120">
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="customerAddress" class="form-label">Delivery Address *</label>
                             <textarea class="form-control" id="customerAddress" rows="3" required></textarea>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="deliveryDate" class="form-label">Preferred Delivery Date</label>
+                                <input type="date" class="form-control" id="deliveryDate" min="">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="deliveryTime" class="form-label">Preferred Delivery Time</label>
+                                <select class="form-control" id="deliveryTime">
+                                    <option value="morning">Morning (9 AM - 12 PM)</option>
+                                    <option value="afternoon">Afternoon (12 PM - 5 PM)</option>
+                                    <option value="evening">Evening (5 PM - 8 PM)</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="mb-3">
                             <label for="customerNotes" class="form-label">Special Instructions (Optional)</label>
-                            <textarea class="form-control" id="customerNotes" rows="2"></textarea>
+                            <textarea class="form-control" id="customerNotes" rows="2" placeholder="Allergies, special delivery instructions, etc."></textarea>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary-custom btn-lg">
-                                <i class="fas fa-arrow-right"></i> Proceed to Checkout
+                                <i class="fas fa-arrow-right"></i> Proceed to Confirmation
                             </button>
                         </div>
                     </form>
@@ -763,30 +853,83 @@
             </div>
         </section>
 
-        <!-- Checkout Section -->
-        <section class="checkout-section" id="checkout">
+        <!-- Order Confirmation Section -->
+        <section class="order-confirmation" id="orderConfirmation">
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <h2 class="mb-4 text-primary">Order Summary</h2>
-                        <div class="order-summary">
-                            <div id="orderItems"></div>
-                            <div class="text-end mt-3">
-                                <h4>Total: <span id="orderTotal" class="text-success">Rs. 0</span></h4>
+                <div class="confirmation-card">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-check-circle fa-5x text-success mb-3"></i>
+                        <h2 class="text-success">Order Confirmed!</h2>
+                        <p class="lead">Thank you for choosing Kingsway Healthcare</p>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h4>Order Details</h4>
+                            <div id="orderSummaryDetails"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Customer Information</h4>
+                            <div id="customerInfoDisplay"></div>
+                        </div>
+                    </div>
+
+                    <div class="delivery-timeline">
+                        <h4 class="mb-4">Delivery Timeline</h4>
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <strong>Order Confirmed</strong>
+                                <br><small class="text-muted">Your order has been received and confirmed</small>
+                                <br><small id="orderTime" class="text-success"></small>
+                            </div>
+                        </div>
+                        <div class="timeline-item pending">
+                            <div class="timeline-icon">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div>
+                                <strong>Order Processing</strong>
+                                <br><small class="text-muted">We're preparing your medications</small>
+                                <br><small class="text-muted">Expected: Within 2-4 hours</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item pending">
+                            <div class="timeline-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div>
+                                <strong>Out for Delivery</strong>
+                                <br><small class="text-muted">Your order is on the way</small>
+                                <br><small class="text-muted" id="estimatedDelivery">Expected: Tomorrow</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item pending">
+                            <div class="timeline-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div>
+                                <strong>Delivered</strong>
+                                <br><small class="text-muted">Order delivered to your address</small>
+                                <br><small class="text-muted">Delivery confirmation will be sent</small>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4">
-                        <h3 class="mb-4">Order Status</h3>
-                        <div class="alert alert-info">
-                            <i class="fas fa-clock"></i> Processing your order...
-                            <br><small>Estimated delivery: 2-3 business days</small>
-                        </div>
-                        <button class="btn btn-success btn-lg w-100" onclick="confirmOrder()">
-                            <i class="fas fa-check"></i> Confirm Order
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Track Your Order:</strong> You'll receive SMS and email updates at each stage.
+                        Order ID: <span id="orderIdDisplay" class="fw-bold"></span>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary-custom me-2" onclick="showHome()">
+                            <i class="fas fa-home"></i> Continue Shopping
                         </button>
-                        <button class="btn btn-secondary w-100 mt-2" onclick="backToDetails()">
-                            <i class="fas fa-arrow-left"></i> Back to Details
+                        <button class="btn btn-outline-primary" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print Receipt
                         </button>
                     </div>
                 </div>
@@ -861,61 +1004,191 @@
         </footer>
     </div>
 
-    <!-- Admin Dashboard -->
+    <!-- Enhanced Admin Dashboard -->
     <div class="dashboard" id="adminDashboard">
-        <div class="container">
+        <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="text-primary">Admin Dashboard</h2>
+                <h2 class="text-primary">
+                    <i class="fas fa-chart-line"></i> Admin Dashboard
+                </h2>
                 <button class="btn btn-secondary" onclick="showHome()">
                     <i class="fas fa-home"></i> Back to Home
                 </button>
             </div>
             
-            <div class="row">
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="dashboard-card">
-                        <h5 class="text-success"><i class="fas fa-shopping-bag"></i> Total Orders</h5>
-                        <h2 id="totalOrders">0</h2>
-                        <p class="text-muted">Orders processed</p>
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalOrders">0</div>
+                        <div><i class="fas fa-shopping-bag"></i> Total Orders</div>
+                        <small>Orders processed today</small>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="dashboard-card">
-                        <h5 class="text-info"><i class="fas fa-users"></i> Total Customers</h5>
-                        <h2 id="totalCustomers">0</h2>
-                        <p class="text-muted">Registered customers</p>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalCustomers">0</div>
+                        <div><i class="fas fa-users"></i> Customers</div>
+                        <small>Registered customers</small>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="dashboard-card">
-                        <h5 class="text-warning"><i class="fas fa-dollar-sign"></i> Revenue</h5>
-                        <h2 id="totalRevenue">Rs. 0</h2>
-                        <p class="text-muted">Total earnings</p>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalRevenue">Rs. 0</div>
+                        <div><i class="fas fa-dollar-sign"></i> Revenue</div>
+                        <small>Today's earnings</small>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-value" id="lowStockItems">0</div>
+                        <div><i class="fas fa-exclamation-triangle"></i> Low Stock</div>
+                        <small>Items need restocking</small>
                     </div>
                 </div>
             </div>
 
-            <div class="dashboard-card">
-                <h3>Recent Orders</h3>
+            <div class="row">
+                <!-- Recent Orders -->
+                <div class="col-lg-8">
+                    <div class="dashboard-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3><i class="fas fa-clipboard-list"></i> Recent Orders</h3>
+                            <select class="form-select w-auto" id="orderFilter" onchange="filterOrders()">
+                                <option value="all">All Orders</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
+                            </select>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer</th>
+                                        <th>Items</th>
+                                        <th>Total</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ordersTable">
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted">No orders yet</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions & Analytics -->
+                <div class="col-lg-4">
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-tachometer-alt"></i> Quick Actions</h3>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" onclick="showInventoryManagement()">
+                                <i class="fas fa-boxes"></i> Inventory Management
+                            </button>
+                            <button class="btn btn-success" onclick="generateReport()">
+                                <i class="fas fa-chart-bar"></i> Generate Report
+                            </button>
+                            <button class="btn btn-warning" onclick="showCustomerManagement()">
+                                <i class="fas fa-user-friends"></i> Customer Management
+                            </button>
+                            <button class="btn btn-info" onclick="showSalesAnalytics()">
+                                <i class="fas fa-analytics"></i> Sales Analytics
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Top Selling Products -->
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-trophy"></i> Top Selling Products</h3>
+                        <div id="topProducts">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Paracetamol 500mg</span>
+                                <span class="badge bg-success">45 sold</span>
+                            </div>
+                            <div class="progress-custom mb-3">
+                                <div class="progress-bar-custom" style="width: 90%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Vitamin C 1000mg</span>
+                                <span class="badge bg-success">38 sold</span>
+                            </div>
+                            <div class="progress-custom mb-3">
+                                <div class="progress-bar-custom" style="width: 76%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Omega 3 Fish Oil</span>
+                                <span class="badge bg-success">32 sold</span>
+                            </div>
+                            <div class="progress-custom mb-3">
+                                <div class="progress-bar-custom" style="width: 64%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Management Section -->
+            <div class="dashboard-card" id="inventorySection" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3><i class="fas fa-boxes"></i> Inventory Management</h3>
+                    <button class="btn btn-secondary btn-sm" onclick="hideInventoryManagement()">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Items</th>
-                                <th>Total</th>
-                                <th>Date</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Current Stock</th>
+                                <th>Price</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="ordersTable">
-                            <tr>
-                                <td colspan="7" class="text-center text-muted">No orders yet</td>
-                            </tr>
+                        <tbody id="inventoryTable">
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- Customer Management Section -->
+            <div class="dashboard-card" id="customerSection" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3><i class="fas fa-user-friends"></i> Customer Management</h3>
+                    <button class="btn btn-secondary btn-sm" onclick="hideCustomerManagement()">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                </div>
+                <div id="customerList"></div>
+            </div>
+
+            <!-- Sales Analytics Section -->
+            <div class="dashboard-card" id="analyticsSection" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3><i class="fas fa-chart-line"></i> Sales Analytics</h3>
+                    <button class="btn btn-secondary btn-sm" onclick="hideSalesAnalytics()">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Sales by Category</h5>
+                        <div id="categoryChart" class="chart-container"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Monthly Revenue</h5>
+                        <div id="revenueChart" class="chart-container"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -970,15 +1243,34 @@
                     <div class="mb-3">
                         <label for="email" class="form-label">Email:</label>
                         <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                        <small class="text-muted">Use any email for demo</small>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password:</label>
                         <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                        <small class="text-muted">Use any password (min 6 characters)</small>
                     </div>
                     <div class="d-grid gap-2">
                         <button class="btn btn-primary" onclick="handleLogin()">Login</button>
-                        <button class="btn btn-link">Don't have an account? Register</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="orderDetailsContent">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="window.print()">Print</button>
                 </div>
             </div>
         </div>
@@ -989,37 +1281,37 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Product Database
+        // Enhanced Product Database
         const products = {
             vitamins: [
-                { id: 1, name: "Vitamin C 1000mg", price: 650, description: "Immune system support tablets - 30 tablets", stock: 45, image: "fas fa-lemon" },
-                { id: 2, name: "Vitamin D3 2000 IU", price: 890, description: "Bone health and immunity support - 60 capsules", stock: 35, image: "fas fa-sun" },
-                { id: 3, name: "Vitamin B Complex", price: 780, description: "Energy metabolism support - 30 tablets", stock: 38, image: "fas fa-bolt" },
-                { id: 4, name: "Vitamin E 400 IU", price: 720, description: "Antioxidant protection - 30 soft gels", stock: 28, image: "fas fa-seedling" }
+                { id: 1, name: "Vitamin C 1000mg", price: 650, description: "Immune system support tablets - 30 tablets", stock: 45, image: "fas fa-lemon", supplier: "HealthPlus Ltd", expiry: "2025-12-15" },
+                { id: 2, name: "Vitamin D3 2000 IU", price: 890, description: "Bone health and immunity support - 60 capsules", stock: 35, image: "fas fa-sun", supplier: "VitaCorp", expiry: "2025-10-20" },
+                { id: 3, name: "Vitamin B Complex", price: 780, description: "Energy metabolism support - 30 tablets", stock: 38, image: "fas fa-bolt", supplier: "NutriMax", expiry: "2025-11-30" },
+                { id: 4, name: "Vitamin E 400 IU", price: 720, description: "Antioxidant protection - 30 soft gels", stock: 28, image: "fas fa-seedling", supplier: "HealthPlus Ltd", expiry: "2025-09-10" }
             ],
             supplements: [
-                { id: 5, name: "Omega 3 Fish Oil", price: 1250, description: "High-quality omega-3 supplement - 60 capsules", stock: 50, image: "fas fa-fish" },
-                { id: 6, name: "Calcium + Vitamin D", price: 890, description: "Essential calcium and vitamin D supplement - 60 tablets", stock: 30, image: "fas fa-bone" },
-                { id: 7, name: "Multivitamin Complex", price: 1480, description: "Complete daily nutrition supplement - 30 tablets", stock: 25, image: "fas fa-pills" },
-                { id: 8, name: "Iron + Folic Acid", price: 720, description: "For anemia prevention and treatment - 30 tablets", stock: 35, image: "fas fa-heart" }
+                { id: 5, name: "Omega 3 Fish Oil", price: 1250, description: "High-quality omega-3 supplement - 60 capsules", stock: 50, image: "fas fa-fish", supplier: "Marine Health", expiry: "2025-08-15" },
+                { id: 6, name: "Calcium + Vitamin D", price: 890, description: "Essential calcium and vitamin D supplement - 60 tablets", stock: 30, image: "fas fa-bone", supplier: "BoneCare Inc", expiry: "2025-07-25" },
+                { id: 7, name: "Multivitamin Complex", price: 1480, description: "Complete daily nutrition supplement - 30 tablets", stock: 25, image: "fas fa-pills", supplier: "NutriMax", expiry: "2025-12-01" },
+                { id: 8, name: "Iron + Folic Acid", price: 720, description: "For anemia prevention and treatment - 30 tablets", stock: 35, image: "fas fa-heart", supplier: "HealthCare Pro", expiry: "2025-10-15" }
             ],
             medicines: [
-                { id: 9, name: "Paracetamol 500mg", price: 120, description: "Pain relief and fever reducer - 10 tablets", stock: 100, image: "fas fa-thermometer-half" },
-                { id: 10, name: "Ibuprofen 400mg", price: 180, description: "Anti-inflammatory pain relief - 10 tablets", stock: 85, image: "fas fa-medkit" },
-                { id: 11, name: "Antacid Tablets", price: 250, description: "Heartburn and acid indigestion relief - 20 tablets", stock: 70, image: "fas fa-pills" },
-                { id: 12, name: "Cough Syrup", price: 320, description: "Dry cough relief - 100ml bottle", stock: 45, image: "fas fa-lungs" }
+                { id: 9, name: "Paracetamol 500mg", price: 120, description: "Pain relief and fever reducer - 10 tablets", stock: 100, image: "fas fa-thermometer-half", supplier: "PharmaCorp", expiry: "2026-03-20" },
+                { id: 10, name: "Ibuprofen 400mg", price: 180, description: "Anti-inflammatory pain relief - 10 tablets", stock: 85, image: "fas fa-medkit", supplier: "MediCore", expiry: "2026-01-10" },
+                { id: 11, name: "Antacid Tablets", price: 250, description: "Heartburn and acid indigestion relief - 20 tablets", stock: 70, image: "fas fa-pills", supplier: "DigestCare", expiry: "2025-11-05" },
+                { id: 12, name: "Cough Syrup", price: 320, description: "Dry cough relief - 100ml bottle", stock: 45, image: "fas fa-lungs", supplier: "RespiroCare", expiry: "2025-09-30" }
             ],
             skincare: [
-                { id: 13, name: "Sunscreen SPF 50", price: 890, description: "Broad spectrum UV protection - 75ml", stock: 40, image: "fas fa-sun" },
-                { id: 14, name: "Moisturizing Cream", price: 650, description: "Daily hydrating cream - 100ml", stock: 35, image: "fas fa-tint" },
-                { id: 15, name: "Anti-Acne Gel", price: 780, description: "Acne treatment gel - 30g", stock: 25, image: "fas fa-spa" },
-                { id: 16, name: "Face Wash", price: 420, description: "Gentle daily cleanser - 150ml", stock: 50, image: "fas fa-pump-soap" }
+                { id: 13, name: "Sunscreen SPF 50", price: 890, description: "Broad spectrum UV protection - 75ml", stock: 40, image: "fas fa-sun", supplier: "SkinGuard", expiry: "2025-06-15" },
+                { id: 14, name: "Moisturizing Cream", price: 650, description: "Daily hydrating cream - 100ml", stock: 35, image: "fas fa-tint", supplier: "DermaCare", expiry: "2025-08-20" },
+                { id: 15, name: "Anti-Acne Gel", price: 780, description: "Acne treatment gel - 30g", stock: 25, image: "fas fa-spa", supplier: "ClearSkin", expiry: "2025-07-10" },
+                { id: 16, name: "Face Wash", price: 420, description: "Gentle daily cleanser - 150ml", stock: 50, image: "fas fa-pump-soap", supplier: "PureCare", expiry: "2025-12-25" }
             ],
             baby: [
-                { id: 17, name: "Baby Lotion", price: 580, description: "Gentle moisturizing lotion - 200ml", stock: 30, image: "fas fa-baby" },
-                { id: 18, name: "Baby Shampoo", price: 450, description: "Tear-free gentle shampoo - 200ml", stock: 35, image: "fas fa-shower" },
-                { id: 19, name: "Diaper Rash Cream", price: 680, description: "Protective barrier cream - 100g", stock: 25, image: "fas fa-heart" },
-                { id: 20, name: "Baby Powder", price: 320, description: "Gentle talc-free powder - 200g", stock: 40, image: "fas fa-feather-alt" }
+                { id: 17, name: "Baby Lotion", price: 580, description: "Gentle moisturizing lotion - 200ml", stock: 30, image: "fas fa-baby", supplier: "BabyCare Ltd", expiry: "2025-10-30" },
+                { id: 18, name: "Baby Shampoo", price: 450, description: "Tear-free gentle shampoo - 200ml", stock: 35, image: "fas fa-shower", supplier: "GentleCare", expiry: "2025-11-15" },
+                { id: 19, name: "Diaper Rash Cream", price: 680, description: "Protective barrier cream - 100g", stock: 25, image: "fas fa-heart", supplier: "BabyCare Ltd", expiry: "2025-09-20" },
+                { id: 20, name: "Baby Powder", price: 320, description: "Gentle talc-free powder - 200g", stock: 40, image: "fas fa-feather-alt", supplier: "SoftCare", expiry: "2025-08-30" }
             ]
         };
 
@@ -1030,6 +1322,7 @@
             currentUser: null,
             cart: [],
             orders: [],
+            customers: [],
             currentCategory: null,
             currentSection: 'home'
         };
@@ -1037,8 +1330,78 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             updateCartUI();
+            setMinDeliveryDate();
             showNotification('Welcome to Kingsway Healthcare!', 'success');
+            generateSampleData();
         });
+
+        // Set minimum delivery date to tomorrow
+        function setMinDeliveryDate() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const dateString = tomorrow.toISOString().split('T')[0];
+            document.getElementById('deliveryDate').min = dateString;
+            document.getElementById('deliveryDate').value = dateString;
+        }
+
+        // Generate sample data for demo
+        function generateSampleData() {
+            // Sample customers
+            appState.customers = [
+                { 
+                    id: 1, 
+                    name: "John Doe", 
+                    email: "john@example.com", 
+                    phone: "077-123-4567",
+                    address: "123 Main St, Colombo",
+                    totalOrders: 5,
+                    totalSpent: 12500,
+                    lastOrder: "2024-01-15"
+                },
+                { 
+                    id: 2, 
+                    name: "Jane Smith", 
+                    email: "jane@example.com", 
+                    phone: "077-987-6543",
+                    address: "456 Oak Ave, Kandy",
+                    totalOrders: 3,
+                    totalSpent: 8900,
+                    lastOrder: "2024-01-10"
+                }
+            ];
+
+            // Sample orders
+            appState.orders = [
+                {
+                    id: 1001,
+                    customer: appState.customers[0],
+                    items: [
+                        { ...products.medicines[0], quantity: 2 },
+                        { ...products.vitamins[0], quantity: 1 }
+                    ],
+                    total: 890,
+                    date: "2024-01-15",
+                    time: "10:30 AM",
+                    status: "delivered",
+                    deliveryDate: "2024-01-16",
+                    deliveryTime: "morning"
+                },
+                {
+                    id: 1002,
+                    customer: appState.customers[1],
+                    items: [
+                        { ...products.supplements[0], quantity: 1 },
+                        { ...products.skincare[0], quantity: 1 }
+                    ],
+                    total: 2140,
+                    date: "2024-01-14",
+                    time: "2:15 PM",
+                    status: "processing",
+                    deliveryDate: "2024-01-17",
+                    deliveryTime: "afternoon"
+                }
+            ];
+        }
 
         // Navigation Functions
         function showHome() {
@@ -1065,7 +1428,7 @@
 
         function hideAllSections() {
             document.querySelector('.customer-details').classList.remove('show');
-            document.querySelector('.checkout-section').classList.remove('show');
+            document.querySelector('.order-confirmation').classList.remove('show');
             document.querySelector('.dashboard').classList.remove('show');
             document.querySelector('.products-section').classList.remove('show');
             document.querySelector('.product-categories').style.display = 'block';
@@ -1092,7 +1455,8 @@
                             <div class="product-price">Rs. ${product.price.toLocaleString()}</div>
                             <div class="product-details">
                                 <p class="small mb-2">${product.description}</p>
-                                <p class="small text-muted mb-2">Stock: ${product.stock} available</p>
+                                <p class="small text-muted mb-1">Stock: ${product.stock} available</p>
+                                <p class="small text-muted mb-2">Supplier: ${product.supplier}</p>
                                 <button class="add-to-cart-btn" onclick="Cart.add(${product.id}, '${category}')" ${product.stock === 0 ? 'disabled' : ''}>
                                     <i class="fas fa-cart-plus"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                                 </button>
@@ -1110,400 +1474,9 @@
                 return;
             }
 
+        }
+
             let allProducts = [];
-            Object.values(products).forEach(categoryProducts => {
-                allProducts = allProducts.concat(categoryProducts);
-            });
-
-            const searchResults = allProducts.filter(product =>
-                product.name.toLowerCase().includes(query) ||
-                product.description.toLowerCase().includes(query)
-            );
-
-            if (searchResults.length > 0) {
-                document.getElementById('categoryTitle').textContent = `Search Results for "${query}"`;
-                document.querySelector('.product-categories').style.display = 'none';
-                document.querySelector('.products-section').classList.add('show');
-                
-                const grid = document.getElementById('productsGrid');
-                grid.innerHTML = searchResults.map(product => `
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <div class="product-card">
-                            <div class="product-image">
-                                <i class="${product.image}"></i>
-                            </div>
-                            <div class="product-body">
-                                <h5 class="product-title">${product.name}</h5>
-                                <div class="product-price">Rs. ${product.price.toLocaleString()}</div>
-                                <div class="product-details">
-                                    <p class="small mb-2">${product.description}</p>
-                                    <p class="small text-muted mb-2">Stock: ${product.stock} available</p>
-                                    <button class="add-to-cart-btn" onclick="Cart.add(${product.id})" ${product.stock === 0 ? 'disabled' : ''}>
-                                        <i class="fas fa-cart-plus"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-                
-                showNotification(`Found ${searchResults.length} products`, 'success');
-                document.querySelector('.products-section').scrollIntoView({ behavior: 'smooth' });
-            } else {
-                showNotification('No products found', 'error');
+            Object.values(products).forEach(categoryProducts) => {
+                allProducts = allProducts.concat(category)
             }
-        }
-
-        // Cart Functions
-        const Cart = {
-            add: function(productId, category = null) {
-                // Find product in all categories
-                let product = null;
-                if (category) {
-                    product = products[category].find(p => p.id === productId);
-                } else {
-                    // Search all categories
-                    for (let cat in products) {
-                        product = products[cat].find(p => p.id === productId);
-                        if (product) break;
-                    }
-                }
-
-                if (!product || product.stock === 0) {
-                    showNotification('Product not available!', 'error');
-                    return;
-                }
-
-                const existingItem = appState.cart.find(item => item.id === productId);
-                if (existingItem) {
-                    if (existingItem.quantity < product.stock) {
-                        existingItem.quantity += 1;
-                        showNotification(`${product.name} quantity updated!`, 'success');
-                    } else {
-                        showNotification('Maximum stock reached!', 'error');
-                        return;
-                    }
-                } else {
-                    appState.cart.push({ ...product, quantity: 1 });
-                    showNotification(`${product.name} added to cart!`, 'success');
-                }
-
-                this.updateDisplay();
-                updateCartUI();
-            },
-
-            remove: function(productId) {
-                const item = appState.cart.find(item => item.id === productId);
-                appState.cart = appState.cart.filter(item => item.id !== productId);
-                this.updateDisplay();
-                updateCartUI();
-                if (item) {
-                    showNotification(`${item.name} removed from cart`, 'success');
-                }
-            },
-
-            updateQuantity: function(productId, newQuantity) {
-                const item = appState.cart.find(item => item.id === productId);
-                if (!item) return;
-
-                if (newQuantity <= 0) {
-                    this.remove(productId);
-                    return;
-                }
-
-                if (newQuantity <= item.stock) {
-                    item.quantity = newQuantity;
-                    this.updateDisplay();
-                    updateCartUI();
-                } else {
-                    showNotification('Maximum stock reached!', 'error');
-                }
-            },
-
-            getTotal: function() {
-                return appState.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-            },
-
-            updateDisplay: function() {
-                const cartItems = document.getElementById('cartItems');
-                const cartTotal = document.getElementById('cartTotal');
-
-                if (appState.cart.length === 0) {
-                    cartItems.innerHTML = `
-                        <div class="text-center py-4">
-                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
-                            <p class="text-muted">Your cart is empty</p>
-                        </div>
-                    `;
-                    cartTotal.textContent = 'Rs. 0';
-                    document.getElementById('proceedBtn').disabled = true;
-                    return;
-                }
-
-                cartItems.innerHTML = appState.cart.map(item => `
-                    <div class="cart-item">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1">${item.name}</h6>
-                                <small class="text-muted">Rs. ${item.price.toLocaleString()} each</small>
-                            </div>
-                            <button class="btn btn-sm btn-outline-danger" onclick="Cart.remove(${item.id})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
-                                <span class="btn btn-outline-secondary">${item.quantity}</span>
-                                <button class="btn btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
-                            </div>
-                            <strong class="text-success">Rs. ${(item.price * item.quantity).toLocaleString()}</strong>
-                        </div>
-                    </div>
-                `).join('');
-
-                cartTotal.textContent = `Rs. ${this.getTotal().toLocaleString()}`;
-                document.getElementById('proceedBtn').disabled = false;
-            },
-
-            openCart: function() {
-                document.getElementById('cartSidebar').classList.add('open');
-                document.getElementById('cartOverlay').classList.add('show');
-                this.updateDisplay();
-            },
-
-            closeCart: function() {
-                document.getElementById('cartSidebar').classList.remove('open');
-                document.getElementById('cartOverlay').classList.remove('show');
-            }
-        };
-
-        // Authentication Functions
-        const Auth = {
-            logout: function() {
-                appState.isLoggedIn = false;
-                appState.userType = null;
-                appState.currentUser = null;
-                appState.cart = [];
-                
-                updateNavigationUI();
-                updateCartUI();
-                Cart.updateDisplay();
-                Cart.closeCart();
-                showHome();
-                showNotification('Logged out successfully', 'success');
-            }
-        };
-
-        function handleLogin() {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const userType = document.getElementById('userType').value;
-
-            if (!email || !password) {
-                showNotification('Please enter both email and password', 'error');
-                return;
-            }
-
-            // Simple validation
-            if (password.length >= 6) {
-                appState.isLoggedIn = true;
-                appState.userType = userType;
-                appState.currentUser = { email, userType };
-                
-                updateNavigationUI();
-                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-                
-                if (userType === 'admin') {
-                    showAdminDashboard();
-                    showNotification('Welcome Admin!', 'success');
-                } else {
-                    showNotification('Welcome back!', 'success');
-                }
-
-                // Clear form
-                document.getElementById('email').value = '';
-                document.getElementById('password').value = '';
-            } else {
-                showNotification('Password must be at least 6 characters', 'error');
-            }
-        }
-
-        function proceedToDetails() {
-            if (appState.cart.length === 0) {
-                showNotification('Your cart is empty!', 'error');
-                return;
-            }
-
-            Cart.closeCart();
-            hideAllSections();
-            document.querySelector('.customer-details').classList.add('show');
-            document.querySelector('.customer-details').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function backToDetails() {
-            hideAllSections();
-            document.querySelector('.customer-details').classList.add('show');
-            document.querySelector('.customer-details').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Customer Details Form
-        document.getElementById('customerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('customerName').value.trim();
-            const phone = document.getElementById('customerPhone').value.trim();
-            const email = document.getElementById('customerEmail').value.trim();
-            const address = document.getElementById('customerAddress').value.trim();
-
-            if (!name || !phone || !email || !address) {
-                showNotification('Please fill all required fields', 'error');
-                return;
-            }
-
-            // Store customer details
-            appState.currentCustomer = { name, phone, email, address };
-            
-            // Show checkout
-            hideAllSections();
-            document.querySelector('.checkout-section').classList.add('show');
-            updateCheckoutDisplay();
-            document.querySelector('.checkout-section').scrollIntoView({ behavior: 'smooth' });
-        });
-
-        function updateCheckoutDisplay() {
-            const orderItems = document.getElementById('orderItems');
-            const orderTotal = document.getElementById('orderTotal');
-
-            orderItems.innerHTML = appState.cart.map(item => `
-                <div class="order-item">
-                    <div class="d-flex justify-content-between">
-                        <span>${item.name} x ${item.quantity}</span>
-                        <span>Rs. ${(item.price * item.quantity).toLocaleString()}</span>
-                    </div>
-                </div>
-            `).join('');
-
-            orderTotal.textContent = `Rs. ${Cart.getTotal().toLocaleString()}`;
-        }
-
-        function confirmOrder() {
-            const order = {
-                id: Date.now(),
-                customer: appState.currentCustomer,
-                items: [...appState.cart],
-                total: Cart.getTotal(),
-                date: new Date().toLocaleDateString(),
-                status: 'Processing'
-            };
-
-            appState.orders.push(order);
-            
-            showNotification(`Order confirmed! Order ID: #${order.id}`, 'success');
-            
-            // Clear cart and forms
-            appState.cart = [];
-            appState.currentCustomer = null;
-            document.getElementById('customerForm').reset();
-            
-            Cart.updateDisplay();
-            updateCartUI();
-            showHome();
-            
-            // Update admin dashboard if admin is logged in
-            if (appState.userType === 'admin') {
-                updateAdminDashboard();
-            }
-        }
-
-        // Admin Dashboard
-        function showAdminDashboard() {
-            hideAllSections();
-            document.querySelector('.main-content').style.display = 'none';
-            document.querySelector('.dashboard').classList.add('show');
-            document.body.classList.add('dashboard-mode');
-            updateAdminDashboard();
-        }
-
-        function updateAdminDashboard() {
-            document.getElementById('totalOrders').textContent = appState.orders.length;
-            document.getElementById('totalCustomers').textContent = new Set(appState.orders.map(o => o.customer?.email)).size;
-            const totalRevenue = appState.orders.reduce((sum, order) => sum + order.total, 0);
-            document.getElementById('totalRevenue').textContent = `Rs. ${totalRevenue.toLocaleString()}`;
-
-            const ordersTable = document.getElementById('ordersTable');
-            if (appState.orders.length === 0) {
-                ordersTable.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No orders yet</td></tr>';
-            } else {
-                ordersTable.innerHTML = appState.orders.map(order => `
-                    <tr>
-                        <td>#${order.id}</td>
-                        <td>${order.customer?.name || 'N/A'}</td>
-                        <td>${order.items.length} items</td>
-                        <td>Rs. ${order.total.toLocaleString()}</td>
-                        <td>${order.date}</td>
-                        <td><span class="order-status status-processing">${order.status}</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-success" onclick="updateOrderStatus(${order.id}, 'Delivered')">
-                                Mark Delivered
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-        }
-
-        function updateOrderStatus(orderId, newStatus) {
-            const order = appState.orders.find(o => o.id === orderId);
-            if (order) {
-                order.status = newStatus;
-                updateAdminDashboard();
-                showNotification(`Order #${orderId} marked as ${newStatus}`, 'success');
-            }
-        }
-
-        // Utility Functions
-        function updateCartUI() {
-            const cartCount = appState.cart.reduce((total, item) => total + item.quantity, 0);
-            const cartBadge = document.getElementById('cartBadge');
-            
-            if (cartCount > 0) {
-                cartBadge.textContent = cartCount;
-                cartBadge.classList.remove('d-none');
-            } else {
-                cartBadge.classList.add('d-none');
-            }
-        }
-
-        function updateNavigationUI() {
-            const loginItem = document.getElementById('loginItem');
-            const logoutItem = document.getElementById('logoutItem');
-            
-            if (appState.isLoggedIn) {
-                loginItem.classList.add('d-none');
-                logoutItem.classList.remove('d-none');
-            } else {
-                loginItem.classList.remove('d-none');
-                logoutItem.classList.add('d-none');
-            }
-        }
-
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type} show`;
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        // Search on Enter key
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchProducts();
-            }
-        });
-    </script>
-</body>
-</html>
