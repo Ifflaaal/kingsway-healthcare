@@ -1459,7 +1459,7 @@
                                 <p class="small text-muted mb-1">Stock: ${product.stock} available</p>
                                 <p class="small text-muted mb-2">Supplier: ${product.supplier}</p>
                                 <button class="add-to-cart-btn" onclick="Cart.add(${product.id}, '${category}')" ${product.stock === 0 ? 'disabled' : ''}>
-                                    <i class="fas fa-cart-plus"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                                    <i class="fas fa-cart-plus"></i> ${product.stock === 0 ? 'Out of Stock' : 'place the order'}
                                 </button>
                             </div>
                         </div>
@@ -1506,7 +1506,7 @@
                                     <p class="small text-muted mb-1">Stock: ${product.stock} available</p>
                                     <p class="small text-muted mb-2">Supplier: ${product.supplier}</p>
                                     <button class="add-to-cart-btn" onclick="Cart.add(${product.id})" ${product.stock === 0 ? 'disabled' : ''}>
-                                        <i class="fas fa-cart-plus"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                                        <i class="fas fa-cart-plus"></i> ${product.stock === 0 ? 'Out of Stock' : 'place the order'}
                                     </button>
                                 </div>
                             </div>
