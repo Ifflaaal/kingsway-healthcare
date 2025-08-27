@@ -305,14 +305,15 @@
         }
 
         .confirmation-card {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
+    background: white;
+    padding: 3rem; /* <-- Added missing semicolon */
+    border-radius:20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+    
 
         .delivery-timeline {
             margin: 2rem 0;
@@ -1474,9 +1475,658 @@
                 return;
             }
 
+            let allProducts = [];
+            Object.values(products).forEach(categoryProducts => {
+                allProducts = allProducts.concat(categoryProducts);
+            });
+
+            const searchResults = allProducts.filter(product =>
+                product.name.toLowerCase().includes(query) ||
+                product.description.toLowerCase().includes(query) ||
+                product.supplier.toLowerCase().includes(query)
+            );
+
+            if (searchResults.length > 0) {
+                document.getElementById('categoryTitle').textContent = `Search Results for "${query}"`;
+                document.querySelector('.product-categories').style.display = 'none';
+                document.querySelector('.products-section').classList.add('show');
+                
+                const grid = document.getElementById('productsGrid');
+                grid.innerHTML = searchResults.map(product => `
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <i class="${product.image}"></i>
+                            </div>
+                            <div class="product-body">
+                                <h5 class="product-title">${product.name}</h5>
+                                <div class="product-price">Rs. ${product.price.toLocaleString()}</div>
+                                <div class="product-details">
+                                    <p class="small mb-2">${product.description}</p>
+                                    <p class="small text-muted mb-1">Stock: ${product.stock} available</p>
+                                    <p class="small text-muted mb-2">Supplier: ${product.supplier}</p>
+                                    <button class="add-to-cart-btn" onclick="Cart.add(${product.id})" ${product.stock === 0 ? 'disabled' : ''}>
+                                        <i class="fas fa-cart-plus"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                showNotification(`Found ${searchResults.length} products`, 'success');
+                document.querySelector('.products-section').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showNotification('No products found matching your search', 'error');
+            }
         }
 
-            let allProducts = [];
-            Object.values(products).forEach(categoryProducts) => {
-                allProducts = allProducts.concat(category)
+        // Cart Functions
+        const Cart = {
+            add: function(productId, category = null) {
+                // Find product in all categories
+                let product = null;
+                if (category) {
+                    product = products[category].find(p => p.id === productId);
+                } else {
+                    // Search all categories
+                    for (let cat in products) {
+                        product = products[cat].find(p => p.id === productId);
+                        if (product) break;
+                    }
+                }
+
+                if (!product || product.stock === 0) {
+                    showNotification('Product not available!', 'error');
+                    return;
+                }
+
+                const existingItem = appState.cart.find(item => item.id === productId);
+                if (existingItem) {
+                    if (existingItem.quantity < product.stock) {
+                        existingItem.quantity += 1;
+                        showNotification(`${product.name} quantity updated!`, 'success');
+                    } else {
+                        showNotification('Maximum stock reached!', 'error');
+                        return;
+                    }
+                } else {
+                    appState.cart.push({ ...product, quantity: 1 });
+                    showNotification(`${product.name} added to cart!`, 'success');
+                }
+
+                this.updateDisplay();
+                updateCartUI();
+            },
+
+            remove: function(productId) {
+                const item = appState.cart.find(item => item.id === productId);
+                appState.cart = appState.cart.filter(item => item.id !== productId);
+                this.updateDisplay();
+                updateCartUI();
+                if (item) {
+                    showNotification(`${item.name} removed from cart`, 'success');
+                }
+            },
+
+            updateQuantity: function(productId, newQuantity) {
+                const item = appState.cart.find(item => item.id === productId);
+                if (!item) return;
+
+                if (newQuantity <= 0) {
+                    this.remove(productId);
+                    return;
+                }
+
+                // Find the actual product to check stock
+                let product = null;
+                for (let cat in products) {
+                    product = products[cat].find(p => p.id === productId);
+                    if (product) break;
+                }
+
+                if (newQuantity <= product.stock) {
+                    item.quantity = newQuantity;
+                    this.updateDisplay();
+                    updateCartUI();
+                } else {
+                    showNotification('Maximum stock reached!', 'error');
+                }
+            },
+
+            getTotal: function() {
+                return appState.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            },
+
+            updateDisplay: function() {
+                const cartItems = document.getElementById('cartItems');
+                const cartTotal = document.getElementById('cartTotal');
+
+                if (appState.cart.length === 0) {
+                    cartItems.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Your cart is empty</p>
+                        </div>
+                    `;
+                    cartTotal.textContent = 'Rs. 0';
+                    document.getElementById('proceedBtn').disabled = true;
+                    return;
+                }
+
+                cartItems.innerHTML = appState.cart.map(item => `
+                    <div class="cart-item">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">${item.name}</h6>
+                                <small class="text-muted">Rs. ${item.price.toLocaleString()} each</small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="Cart.remove(${item.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                                <span class="btn btn-outline-secondary">${item.quantity}</span>
+                                <button class="btn btn-outline-secondary" onclick="Cart.updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                            </div>
+                            <strong class="text-success">Rs. ${(item.price * item.quantity).toLocaleString()}</strong>
+                        </div>
+                    </div>
+                `).join('');
+
+                cartTotal.textContent = `Rs. ${this.getTotal().toLocaleString()}`;
+                document.getElementById('proceedBtn').disabled = false;
+            },
+
+            openCart: function() {
+                document.getElementById('cartSidebar').classList.add('open');
+                document.getElementById('cartOverlay').classList.add('show');
+                this.updateDisplay();
+            },
+
+            closeCart: function() {
+                document.getElementById('cartSidebar').classList.remove('open');
+                document.getElementById('cartOverlay').classList.remove('show');
             }
+        };
+
+        // Authentication Functions
+        const Auth = {
+            logout: function() {
+                appState.isLoggedIn = false;
+                appState.userType = null;
+                appState.currentUser = null;
+                appState.cart = [];
+                
+                updateNavigationUI();
+                updateCartUI();
+                Cart.updateDisplay();
+                Cart.closeCart();
+                showHome();
+                showNotification('Logged out successfully', 'success');
+            }
+        };
+
+        function handleLogin() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const userType = document.getElementById('userType').value;
+
+            if (!email || !password) {
+                showNotification('Please enter both email and password', 'error');
+                return;
+            }
+
+            // Simple validation
+            if (password.length >= 6) {
+                appState.isLoggedIn = true;
+                appState.userType = userType;
+                appState.currentUser = { email, userType };
+                
+                updateNavigationUI();
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                
+                if (userType === 'admin') {
+                    showAdminDashboard();
+                    showNotification('Welcome Admin!', 'success');
+                } else {
+                    showNotification('Welcome back!', 'success');
+                }
+
+                // Clear form
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+            } else {
+                showNotification('Password must be at least 6 characters', 'error');
+            }
+        }
+
+        function proceedToDetails() {
+            if (appState.cart.length === 0) {
+                showNotification('Your cart is empty!', 'error');
+                return;
+            }
+
+            Cart.closeCart();
+            hideAllSections();
+            document.querySelector('.customer-details').classList.add('show');
+            document.querySelector('.customer-details').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Customer Details Form
+        document.getElementById('customerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const email = document.getElementById('customerEmail').value.trim();
+            const address = document.getElementById('customerAddress').value.trim();
+            const age = document.getElementById('customerAge').value;
+            const deliveryDate = document.getElementById('deliveryDate').value;
+            const deliveryTime = document.getElementById('deliveryTime').value;
+            const notes = document.getElementById('customerNotes').value.trim();
+
+            if (!name || !phone || !email || !address) {
+                showNotification('Please fill all required fields', 'error');
+                return;
+            }
+
+            // Store customer details
+            appState.currentCustomer = { 
+                name, phone, email, address, age, 
+                deliveryDate, deliveryTime, notes 
+            };
+            
+            // Show order confirmation
+            hideAllSections();
+            document.querySelector('.order-confirmation').classList.add('show');
+            displayOrderConfirmation();
+            document.querySelector('.order-confirmation').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function displayOrderConfirmation() {
+            const orderId = Date.now();
+            const orderTime = new Date().toLocaleString();
+            
+            // Display order ID and time
+            document.getElementById('orderIdDisplay').textContent = `#${orderId}`;
+            document.getElementById('orderTime').textContent = `Confirmed at ${orderTime}`;
+            
+            // Display order summary
+            const orderSummary = document.getElementById('orderSummaryDetails');
+            orderSummary.innerHTML = `
+                <div class="mb-3">
+                    <strong>Order ID:</strong> #${orderId}
+                    <br><strong>Total Items:</strong> ${appState.cart.reduce((sum, item) => sum + item.quantity, 0)}
+                    <br><strong>Total Amount:</strong> Rs. ${Cart.getTotal().toLocaleString()}
+                </div>
+                <h6>Items Ordered:</h6>
+                ${appState.cart.map(item => `
+                    <div class="order-item-detail">
+                        <span>${item.name} x ${item.quantity}</span>
+                        <span class="float-end">Rs. ${(item.price * item.quantity).toLocaleString()}</span>
+                    </div>
+                `).join('')}
+            `;
+            
+            // Display customer info
+            const customerInfo = document.getElementById('customerInfoDisplay');
+            customerInfo.innerHTML = `
+                <p><strong>Name:</strong> ${appState.currentCustomer.name}</p>
+                <p><strong>Phone:</strong> ${appState.currentCustomer.phone}</p>
+                <p><strong>Email:</strong> ${appState.currentCustomer.email}</p>
+                <p><strong>Address:</strong> ${appState.currentCustomer.address}</p>
+                <p><strong>Delivery Date:</strong> ${appState.currentCustomer.deliveryDate}</p>
+                <p><strong>Delivery Time:</strong> ${appState.currentCustomer.deliveryTime}</p>
+                ${appState.currentCustomer.notes ? `<p><strong>Notes:</strong> ${appState.currentCustomer.notes}</p>` : ''}
+            `;
+            
+            // Set estimated delivery
+            const deliveryDate = new Date(appState.currentCustomer.deliveryDate);
+            document.getElementById('estimatedDelivery').textContent = `Expected: ${deliveryDate.toLocaleDateString()}`;
+            
+            // Create and store the order
+            const order = {
+                id: orderId,
+                customer: appState.currentCustomer,
+                items: [...appState.cart],
+                total: Cart.getTotal(),
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString(),
+                status: 'pending',
+                deliveryDate: appState.currentCustomer.deliveryDate,
+                deliveryTime: appState.currentCustomer.deliveryTime
+            };
+            
+            appState.orders.push(order);
+            
+            // Add customer if not exists
+            const existingCustomer = appState.customers.find(c => c.email === appState.currentCustomer.email);
+            if (!existingCustomer) {
+                appState.customers.push({
+                    id: appState.customers.length + 1,
+                    ...appState.currentCustomer,
+                    totalOrders: 1,
+                    totalSpent: Cart.getTotal(),
+                    lastOrder: new Date().toLocaleDateString()
+                });
+            } else {
+                existingCustomer.totalOrders += 1;
+                existingCustomer.totalSpent += Cart.getTotal();
+                existingCustomer.lastOrder = new Date().toLocaleDateString();
+            }
+            
+            // Clear cart and forms
+            appState.cart = [];
+            appState.currentCustomer = null;
+            document.getElementById('customerForm').reset();
+            setMinDeliveryDate(); // Reset delivery date
+            
+            Cart.updateDisplay();
+            updateCartUI();
+            
+            // Update admin dashboard if admin is logged in
+            if (appState.userType === 'admin') {
+                updateAdminDashboard();
+            }
+        }
+
+        // Admin Dashboard Functions
+        function showAdminDashboard() {
+            hideAllSections();
+            document.querySelector('.main-content').style.display = 'none';
+            document.querySelector('.dashboard').classList.add('show');
+            document.body.classList.add('dashboard-mode');
+            updateAdminDashboard();
+        }
+
+        function updateAdminDashboard() {
+            // Update statistics
+            document.getElementById('totalOrders').textContent = appState.orders.length;
+            document.getElementById('totalCustomers').textContent = appState.customers.length;
+            
+            const totalRevenue = appState.orders.reduce((sum, order) => sum + order.total, 0);
+            document.getElementById('totalRevenue').textContent = `Rs. ${totalRevenue.toLocaleString()}`;
+            
+            // Calculate low stock items
+            let lowStockCount = 0;
+            Object.values(products).forEach(categoryProducts => {
+                categoryProducts.forEach(product => {
+                    if (product.stock < 10) lowStockCount++;
+                });
+            });
+            document.getElementById('lowStockItems').textContent = lowStockCount;
+
+            // Update orders table
+            updateOrdersTable();
+        }
+
+        function updateOrdersTable() {
+            const ordersTable = document.getElementById('ordersTable');
+            if (appState.orders.length === 0) {
+                ordersTable.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No orders yet</td></tr>';
+                return;
+            }
+
+            ordersTable.innerHTML = appState.orders.map(order => `
+                <tr>
+                    <td>#${order.id}</td>
+                    <td>${order.customer?.name || 'N/A'}</td>
+                    <td>${order.items.length} items</td>
+                    <td>Rs. ${order.total.toLocaleString()}</td>
+                    <td>${order.date}</td>
+                    <td><span class="order-status status-${order.status}">${order.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-info action-btn" onclick="showOrderDetails(${order.id})">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn btn-sm btn-success action-btn" onclick="updateOrderStatus(${order.id}, 'processing')">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning action-btn" onclick="updateOrderStatus(${order.id}, 'shipped')">
+                            <i class="fas fa-truck"></i>
+                        </button>
+                        <button class="btn btn-sm btn-primary action-btn" onclick="updateOrderStatus(${order.id}, 'delivered')">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = appState.orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                updateOrdersTable();
+                showNotification(`Order #${orderId} marked as ${newStatus}`, 'success');
+            }
+        }
+
+        function showOrderDetails(orderId) {
+            const order = appState.orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+            const content = document.getElementById('orderDetailsContent');
+            
+            content.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Order Information</h5>
+                        <p><strong>Order ID:</strong> #${order.id}</p>
+                        <p><strong>Date:</strong> ${order.date} ${order.time}</p>
+                        <p><strong>Status:</strong> <span class="order-status status-${order.status}">${order.status}</span></p>
+                        <p><strong>Total:</strong> Rs. ${order.total.toLocaleString()}</p>
+                        <p><strong>Delivery Date:</strong> ${order.deliveryDate}</p>
+                        <p><strong>Delivery Time:</strong> ${order.deliveryTime}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Customer Information</h5>
+                        <p><strong>Name:</strong> ${order.customer.name}</p>
+                        <p><strong>Phone:</strong> ${order.customer.phone}</p>
+                        <p><strong>Email:</strong> ${order.customer.email}</p>
+                        <p><strong>Address:</strong> ${order.customer.address}</p>
+                        ${order.customer.notes ? `<p><strong>Notes:</strong> ${order.customer.notes}</p>` : ''}
+                    </div>
+                </div>
+                <h5>Order Items</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${order.items.map(item => `
+                                <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>Rs. ${item.price.toLocaleString()}</td>
+                                    <td>Rs. ${(item.price * item.quantity).toLocaleString()}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            modal.show();
+        }
+
+        // Admin Dashboard Management Functions
+        function showInventoryManagement() {
+            document.getElementById('inventorySection').style.display = 'block';
+            updateInventoryTable();
+        }
+
+        function hideInventoryManagement() {
+            document.getElementById('inventorySection').style.display = 'none';
+        }
+
+        function updateInventoryTable() {
+            const inventoryTable = document.getElementById('inventoryTable');
+            let allProducts = [];
+            
+            Object.entries(products).forEach(([category, categoryProducts]) => {
+                categoryProducts.forEach(product => {
+                    allProducts.push({...product, category});
+                });
+            });
+
+            inventoryTable.innerHTML = allProducts.map(product => `
+                <tr class="${product.stock === 0 ? 'inventory-out' : product.stock < 10 ? 'inventory-low' : ''}">
+                    <td>${product.name}</td>
+                    <td><span class="badge bg-secondary">${product.category}</span></td>
+                    <td>${product.stock}</td>
+                    <td>Rs. ${product.price.toLocaleString()}</td>
+                    <td>
+                        ${product.stock === 0 ? 
+                            '<span class="badge bg-danger">Out of Stock</span>' : 
+                            product.stock < 10 ? 
+                            '<span class="badge bg-warning">Low Stock</span>' : 
+                            '<span class="badge bg-success">In Stock</span>'
+                        }
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-primary action-btn" onclick="restockProduct(${product.id})">
+                            <i class="fas fa-plus"></i> Restock
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function restockProduct(productId) {
+            const quantity = prompt('Enter restock quantity:');
+            if (quantity && !isNaN(quantity) && parseInt(quantity) > 0) {
+                // Find and update product stock
+                Object.values(products).forEach(categoryProducts => {
+                    const product = categoryProducts.find(p => p.id === productId);
+                    if (product) {
+                        product.stock += parseInt(quantity);
+                        showNotification(`${product.name} restocked with ${quantity} units`, 'success');
+                        updateInventoryTable();
+                        updateAdminDashboard();
+                    }
+                });
+            }
+        }
+
+        function showCustomerManagement() {
+            document.getElementById('customerSection').style.display = 'block';
+            updateCustomerList();
+        }
+
+        function hideCustomerManagement() {
+            document.getElementById('customerSection').style.display = 'none';
+        }
+
+        function updateCustomerList() {
+            const customerList = document.getElementById('customerList');
+            
+            if (appState.customers.length === 0) {
+                customerList.innerHTML = '<p class="text-muted">No customers registered yet.</p>';
+                return;
+            }
+
+            customerList.innerHTML = appState.customers.map(customer => `
+                <div class="customer-profile">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5>${customer.name}</h5>
+                            <p class="mb-1"><i class="fas fa-envelope"></i> ${customer.email}</p>
+                            <p class="mb-1"><i class="fas fa-phone"></i> ${customer.phone}</p>
+                            <p class="mb-1"><i class="fas fa-map-marker-alt"></i> ${customer.address}</p>
+                            <small class="text-muted">Last order: ${customer.lastOrder}</small>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <h6 class="text-success">Rs. ${customer.totalSpent.toLocaleString()}</h6>
+                            <p class="mb-0">Total Spent</p>
+                            <p class="text-muted">${customer.totalOrders} orders</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showSalesAnalytics() {
+            document.getElementById('analyticsSection').style.display = 'block';
+            // In a real application, you would use a charting library like Chart.js here
+            showNotification('Sales analytics would display charts here', 'success');
+        }
+
+        function hideSalesAnalytics() {
+            document.getElementById('analyticsSection').style.display = 'none';
+        }
+
+        function generateReport() {
+            const report = {
+                totalOrders: appState.orders.length,
+                totalCustomers: appState.customers.length,
+                totalRevenue: appState.orders.reduce((sum, order) => sum + order.total, 0),
+                topProduct: 'Paracetamol 500mg',
+                date: new Date().toLocaleDateString()
+            };
+            
+            alert(`DAILY REPORT - ${report.date}\n\nTotal Orders: ${report.totalOrders}\nTotal Customers: ${report.totalCustomers}\nTotal Revenue: Rs. ${report.totalRevenue.toLocaleString()}\nTop Product: ${report.topProduct}`);
+        }
+
+        function filterOrders() {
+            const filter = document.getElementById('orderFilter').value;
+            // In a real application, you would filter the orders here
+            showNotification(`Filtering orders by: ${filter}`, 'success');
+            updateOrdersTable();
+        }
+
+        // Utility Functions
+        function updateCartUI() {
+            const cartCount = appState.cart.reduce((total, item) => total + item.quantity, 0);
+            const cartBadge = document.getElementById('cartBadge');
+            
+            if (cartCount > 0) {
+                cartBadge.textContent = cartCount;
+                cartBadge.classList.remove('d-none');
+            } else {
+                cartBadge.classList.add('d-none');
+            }
+        }
+
+        function updateNavigationUI() {
+            const loginItem = document.getElementById('loginItem');
+            const logoutItem = document.getElementById('logoutItem');
+            
+            if (appState.isLoggedIn) {
+                loginItem.classList.add('d-none');
+                logoutItem.classList.remove('d-none');
+            } else {
+                loginItem.classList.remove('d-none');
+                logoutItem.classList.add('d-none');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
+    </script>
+</body>
+</html>
